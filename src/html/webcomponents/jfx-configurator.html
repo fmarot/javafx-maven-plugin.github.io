@@ -1,0 +1,120 @@
+<link rel="import" href="polymer.html">
+
+<dom-module id="jfx-configurator">
+    <template>
+        <configuration-settings>
+            <os-selection>
+                <os value="windows">Windows</os>
+                <os value="linux">Linux</os>
+                <os value="macosx">Mac OS X</os>
+            </os-selection>
+            <goals>
+                <shared-values>
+                    <boolean default="false" name="verbose"></boolean>
+                    <string name="mainClass" required></string>
+                    <string name="jfxAppOutputDir" default="${project.build.directory}/jfx/app"></string>
+                    <string name="jfxMainAppJarName" default="${project.build.finalName}-jfx.jar"></string>
+                    <string name="deployDir" default="${project.basedir}/src/main/deploy"></string>
+                </shared-values>
+                
+                <goal cli="jar" lifecycle="build-jar">
+                    <boolean default="false" name="css2bin"></boolean>
+                    <string name="preLoader"></string>
+                    <boolean name="updateExistingJar" default="false"></boolean>
+                    <boolean name="allPermissions" default="false"></boolean>
+                    <string-map name="manifestAttributes"></string-map>
+                    <boolean name="addPackagerJar" default="true"></boolean>
+                </goal>
+                
+                <goal cli="native" lifecycle="build-native" dependsOn="build-jar">
+                    <hint os="windows">
+                        <p>Building on Windows requires some tools to be installed:</p>
+                        <ul>
+                            <li>EXE bundler: Please install WiX</li>
+                            <li>MSI bundler: Please install InnoSetup</li>
+                        </ul>
+                    </hint>
+                    <hint os="macosx">
+                        <p>Building on Mac OS X requires some special information.</p>
+                    </hint>
+                    <hint os="linux">
+                        <p>Building on Linux requires some special information, for example a LICENSE when creating DEP-packages.</p>
+                    </hint>
+                    <string name="identifier" os="macosx"></string>
+                    <string name="vendor" default="${project.organization.name}" required></string>
+                    <string name="nativeOutputDir" default="${project.build.directory}/jfx/native"></string>
+                    <string name="bundleType" default="ALL" deprecated>
+                        <note>
+                            <p>BundleType was refactored/replaced in javafx itself, please use/upgrade to the new bundler-property</p>
+                        </note>
+                        <value>ALL</value>
+                    </string>
+                    <string name="bundler" default="ALL">
+                        <value>ALL</value>
+                        <value os="windows">exe</value>
+                        <value os="windows">msi</value>
+                        <value os="windows">windows.app</value>
+
+                        <value os="linux">dep</value>
+                        <value os="linux">rpm</value>
+
+                        <value os="macosx">dmg</value>
+                        <value os="macosx">pkg</value>
+                        <value os="macosx">mac.appStore</value>
+                    </string>
+                    <string-list name="jvmArgs"></string-list>
+                    <string-map name="jvmProperties"></string-map>
+                    <string-map name="userJvmArgs"></string-map>
+                    <string name="nativeReleaseVersion" default="1.0"></string>
+                    <boolean name="needShortcut" default="false"></boolean>
+                    <boolean name="needMenu" default="false"></boolean>
+                    <string-map name="bundleArguments"></string-map>
+                    <string name="appName" default="${project.build.finalName}"></string>
+                    <string name="additionalAppResources"></string>
+                </goal>
+                <goal cli="web" lifecycle="build-web">
+                    <hint>
+                        <p>Be aware that this is not as supported as other goals, deploying javafx-apps via JNLP or Applet is error-prone!</p>
+                    </hint>
+                    <string name="vendor" default="${project.organization.name}" required></string>
+                    <string name="webOutputDir" default="${project.build.directory}/jfx/web"></string>
+                    <boolean name="needShortcut" default="false"></boolean>
+                    <boolean name="needMenu" default="false"></boolean>
+                    <string name="preLoader"></string>
+                    <boolean default="false" name="allPermissions"></boolean>
+                    <int name="width" default="800"></int>
+                    <int name="height" default="600"></int>
+                    <int name="embeddedWidth" default="800"></int>
+                    <int name="embeddedHeight" default="600"></int>
+                    <string name="keyStore" default="src/main/deploy/keystore.jks"></string>
+                    <string name="keyStoreAlias" default="myalias"></string>
+                    <string name="keyStorePassword" default="password"></string>
+                    <string name="keyPassword"></string>
+                    <string name="keyStoreType" default="jks"></string>
+                    <string name="description" default="Sample JavaFX Application."></string>
+                    <string name="title" default="Sample JavaFX Application"></string>
+                    <string name="j2seVersion" default="1.7+"></string>
+                </goal>
+                <goal cli="generate-key-store" without-shared>
+                    <boolean name="overwriteKeyStore" default="false"></boolean>
+                    <string name="keyStore" default="src/main/deploy/keystore.jks"></string>
+                    <string name="keyStoreAlias" default="myalias"></string>
+                    <string name="keyStorePassword" default="password"></string>
+                    <string name="keyPassword"></string>
+                    <string name="certDomain"></string>
+                    <string name="certOrgUnit"></string>
+                    <string name="certOrg"></string>
+                    <string name="certState"></string>
+                    <string name="certCountry"></string>
+                </goal>
+            </goals>
+        </configuration-settings>
+        
+        <configuration-output></configuration-output>
+    </template>
+    <script>
+        Polymer({
+          is: "jfx-configurator"
+        });
+    </script>
+</dom-module>
