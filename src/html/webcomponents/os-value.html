@@ -21,10 +21,15 @@
             listeners:{
                 "click":"selectNewOS"
             },
+            attached: function(){
+                // call this to get initial selection
+                this.osGotChanged(this.os);
+            },
             selectNewOS: function(){
                 this.set("os", this.value);
             },
             osGotChanged: function(newValue){
+                // mark selected os-button
                 var cssClassToAddOnMatching = "mdl-button--colored";
                 var classesList = Polymer.dom(this.root).querySelectorAll("button")[0].classList;
                 if(this.value === newValue){

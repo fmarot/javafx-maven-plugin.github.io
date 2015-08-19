@@ -114,11 +114,17 @@
         Polymer({
             is: "jfx-configurator",
             ready: function() {
+                function isOS(osLabel){
+                    return navigator.appVersion.indexOf(osLabel) !== -1;
+                }
                 this.configuration = {
                     selectedOS: "none"
                 };
                 
                 // conditionally set selected OS
+                if(isOS("Linux")) this.set("configuration.selectedOS", "linux");
+                if(isOS("Mac")) this.set("configuration.selectedOS", "macosx");
+                if(isOS("Win")) this.set("configuration.selectedOS", "windows");
             }
         });
     </script>
