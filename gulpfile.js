@@ -7,6 +7,7 @@ var targetFolder = "target";
 var sourceFolder = "src";
 
 var htmlSources = sourceFolder + "/html/**/*.html";
+var cssSources = sourceFolder + "/css/**/*.css";
 var assetsSources = sourceFolder + "/assets/**/*";
 
 var componentsTarget = targetFolder + "/webcomponents";
@@ -21,7 +22,14 @@ gulp.task("html", function () {
 gulp.task("assets", function () {
     console.log("Copying asset-files");
     return gulp.src(assetsSources)
-        .pipe(gulp.dest(targetFolder))
+        .pipe(gulp.dest(targetFolder + "/resources"))
+        .on("error", gutil.log);
+});
+
+gulp.task("css", function () {
+    console.log("Copying CSS-files");
+    return gulp.src(cssSources)
+        .pipe(gulp.dest(targetFolder + "/css"))
         .on("error", gutil.log);
 });
 
@@ -62,6 +70,7 @@ gulp.task("webserver", ["default"], function(cb) {
         minify:false,
         codeSync:false,
         timestamps: false,
+        injectChanges: false,
         
         port: 8080,
         server: {
@@ -70,7 +79,8 @@ gulp.task("webserver", ["default"], function(cb) {
     });
 
     gulp.watch(assetsSources, ["assets"], browserSync.reload);
+    gulp.watch(cssSources, ["css"], browserSync.reload);
     gulp.watch(htmlSources, ["html"], browserSync.reload);
 });
 
-gulp.task("default", ["html", "assets", "webdeps"], function(cb){ cb(); });
+gulp.task("default", ["html", "assets", "css", "webdeps"], function(cb){ cb(); });

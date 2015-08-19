@@ -1,14 +1,12 @@
 <link rel="import" href="polymer.html">
+<link rel="import" href="os-selection.html">
 
 <dom-module id="jfx-configurator">
     <template>
+        <p>Selected OS: <span>{{configuration.selectedOS}}</span></p>
         <configuration-settings>
-            <os-selection>
-                <os value="windows">Windows</os>
-                <os value="linux">Linux</os>
-                <os value="macosx">Mac OS X</os>
-            </os-selection>
-            <goals>
+            <os-selection selectedOS="{{configuration.selectedOS}}"></os-selection>
+            <maven-goals>
                 <shared-values>
                     <boolean default="false" name="verbose"></boolean>
                     <string name="mainClass" required></string>
@@ -17,16 +15,16 @@
                     <string name="deployDir" default="${project.basedir}/src/main/deploy"></string>
                 </shared-values>
                 
-                <goal cli="jar" lifecycle="build-jar">
+                <maven-goal cli="jar" lifecycle="build-jar">
                     <boolean default="false" name="css2bin"></boolean>
                     <string name="preLoader"></string>
                     <boolean name="updateExistingJar" default="false"></boolean>
                     <boolean name="allPermissions" default="false"></boolean>
                     <string-map name="manifestAttributes"></string-map>
                     <boolean name="addPackagerJar" default="true"></boolean>
-                </goal>
+                </maven-goal>
                 
-                <goal cli="native" lifecycle="build-native" dependsOn="build-jar">
+                <maven-goal cli="native" lifecycle="build-native" dependsOn="build-jar">
                     <hint os="windows">
                         <p>Building on Windows requires some tools to be installed:</p>
                         <ul>
@@ -71,8 +69,8 @@
                     <string-map name="bundleArguments"></string-map>
                     <string name="appName" default="${project.build.finalName}"></string>
                     <string name="additionalAppResources"></string>
-                </goal>
-                <goal cli="web" lifecycle="build-web">
+                </maven-goal>
+                <maven-goal cli="web" lifecycle="build-web">
                     <hint>
                         <p>Be aware that this is not as supported as other goals, deploying javafx-apps via JNLP or Applet is error-prone!</p>
                     </hint>
@@ -94,8 +92,8 @@
                     <string name="description" default="Sample JavaFX Application."></string>
                     <string name="title" default="Sample JavaFX Application"></string>
                     <string name="j2seVersion" default="1.7+"></string>
-                </goal>
-                <goal cli="generate-key-store" without-shared>
+                </maven-goal>
+                <maven-goal cli="generate-key-store" without-shared>
                     <boolean name="overwriteKeyStore" default="false"></boolean>
                     <string name="keyStore" default="src/main/deploy/keystore.jks"></string>
                     <string name="keyStoreAlias" default="myalias"></string>
@@ -106,15 +104,22 @@
                     <string name="certOrg"></string>
                     <string name="certState"></string>
                     <string name="certCountry"></string>
-                </goal>
-            </goals>
+                </maven-goal>
+            </maven-goals>
         </configuration-settings>
         
         <configuration-output></configuration-output>
     </template>
     <script>
         Polymer({
-          is: "jfx-configurator"
+            is: "jfx-configurator",
+            ready: function() {
+                this.configuration = {
+                    selectedOS: "none"
+                };
+                
+                // conditionally set selected OS
+            }
         });
     </script>
 </dom-module>

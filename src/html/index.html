@@ -7,8 +7,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         
         <link rel="stylesheet" href="css/material.min.css">
-        <!-- <link rel="stylesheet" href="https://storage.googleapis.com/code.getmdl.io/1.0.2/material.indigo-blue.min.css" />  --> 
-        <!-- <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"> -->
+        <link rel="stylesheet" href="css/material.indigo-blue.min.css" />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
         <script type="text/javascript" src="js/webcomponents-lite.min.js"></script>
 
@@ -19,7 +19,7 @@
         <h1>JavaFX-Maven-Plugin</h1>
         <h2>Create your plugin-configuration with ease</h2>
         
-        <div is="github-star"></div>
+        <github-star></github-star>
         <jfx-configurator></jfx-configurator>
 
         <footer class="mdl-mega-footer">
@@ -75,5 +75,10 @@
 
         <!-- MDL -->
         <script src="js/material.min.js"></script>
+        <script>
+            document.addEventListener('WebComponentsReady', function() {
+                componentHandler.upgradeDom();
+            });
+        </script>
     </body>
 </html>

@@ -1,0 +1,38 @@
+<link rel="import" href="polymer.html">
+
+<dom-module id="os-value">
+    <template>
+        <!-- Raised button with ripple -->
+        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">
+            <content></content>
+        </button>
+    </template>
+    <script>
+        Polymer({
+            is: "os-value",
+            properties:{
+                value: String,
+                os:{
+                    type:String,
+                    notify: true,
+                    observer: "osGotChanged"
+                }
+            },
+            listeners:{
+                "click":"selectNewOS"
+            },
+            selectNewOS: function(){
+                this.set("os", this.value);
+            },
+            osGotChanged: function(newValue){
+                var cssClassToAddOnMatching = "mdl-button--colored";
+                var classesList = Polymer.dom(this.root).querySelectorAll("button")[0].classList;
+                if(this.value === newValue){
+                    classesList.add(cssClassToAddOnMatching);
+                }else{
+                    classesList.remove(cssClassToAddOnMatching);
+                }
+            }
+        });
+    </script>
+</dom-module>

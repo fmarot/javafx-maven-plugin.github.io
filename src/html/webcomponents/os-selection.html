@@ -1,0 +1,23 @@
+<link rel="import" href="polymer.html">
+<link rel="import" href="os-value.html">
+
+<dom-module id="os-selection">
+    <template>
+        <div>
+            <os-value value="windows" os="{{ selectedos }}">Windows</os-value>
+            <os-value value="linux" os="{{ selectedos }}">Linux</os-value>
+            <os-value value="macosx" os="{{ selectedos }}">Mac OS X</os-value>
+        </div>
+    </template>
+    <script>
+        Polymer({
+            is: "os-selection",
+            properties:{
+                selectedos:{
+                    type:String,
+                    notify:true
+                }
+            }
+        });
+    </script>
+</dom-module>
