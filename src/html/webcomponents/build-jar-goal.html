@@ -1,0 +1,46 @@
+<link rel="import" href="polymer.html">
+<link rel="import" href="global-goal-values.html">
+
+<link rel="import" href="string-value.html">
+<link rel="import" href="boolean-value.html">
+
+<dom-module id="build-jar-goal">
+    <template>
+        <global-goal-values mavenProperties="{{mavenproperties}}"></global-goal-values>
+        
+        <span class="shortPropertyDescription">Compile CSS to binary-format</span>
+        <boolean-value label="css2bin" value="{{mavenproperties.css2bin.value}}" defaultValue="{{mavenproperties.css2bin.defaultValue}}"></boolean-value>
+
+        <span class="shortPropertyDescription">class-name of javafx-preloader</span>
+        <string-value label="preLoader" value="{{mavenproperties.preLoader.value}}" defaultValue="{{mavenproperties.preLoader.defaultValue}}"></string-value>
+
+        <span class="shortPropertyDescription">Update existing JAR-file</span>
+        <boolean-value label="updateExistingJar" value="{{mavenproperties.updateExistingJar.value}}" defaultValue="{{mavenproperties.updateExistingJar.defaultValue}}"></boolean-value>
+
+        <span class="shortPropertyDescription">Request priviledged permissions</span>
+        <boolean-value label="allPermissions" value="{{mavenproperties.allPermissions.value}}" defaultValue="{{mavenproperties.allPermissions.defaultValue}}"></boolean-value>
+
+        <!-- TODO -->
+        <string-map name="manifestAttributes"></string-map>
+        
+        <span class="shortPropertyDescription">Add packager.jar to dependencies (when provided as system-scoped)</span>
+        <boolean-value label="addPackagerJar" value="{{mavenproperties.addPackagerJar.value}}" defaultValue="{{mavenproperties.addPackagerJar.defaultValue}}"></boolean-value>
+    </template>
+    <script>
+        Polymer({
+            is: "build-jar-goal",
+            properties:{
+                configuration:{
+                    type:Object,
+                    notify: true
+                },
+                mavenProperties:{
+                    type:Object,
+                    notify: true
+                },
+                cli: String,
+                lifecycle: String
+            }
+        });
+    </script>
+</dom-module>

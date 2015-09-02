@@ -1,0 +1,49 @@
+<link rel="import" href="polymer.html">
+
+<maven-goal cli="native" lifecycle="build-native" dependsOn="build-jar">
+    <global-goal-values configuration="{{configuration}}"></global-goal-values>
+    <goal-hint os="windows" selectedOS="{{configuration.selectedOS}}">
+        <p>Building on Windows requires some tools to be installed:</p>
+        <ul>
+            <li>EXE bundler: Please install WiX</li>
+            <li>MSI bundler: Please install InnoSetup</li>
+        </ul>
+    </goal-hint>
+    <goal-hint os="macosx" selectedOS="{{configuration.selectedOS}}">
+        <p>Building on Mac OS X requires some special information.</p>
+    </goal-hint>
+    <goal-hint os="linux" selectedOS="{{configuration.selectedOS}}">
+        <p>Building on Linux requires some special information, for example a LICENSE when creating DEP-packages.</p>
+    </goal-hint>
+    <string name="identifier" os="macosx"></string>
+    <string name="vendor" default="${project.organization.name}" required></string>
+    <string name="nativeOutputDir" default="${project.build.directory}/jfx/native"></string>
+    <string name="bundleType" default="ALL" deprecated>
+        <note>
+            <p>BundleType was refactored/replaced in javafx itself, please use/upgrade to the new bundler-property</p>
+        </note>
+        <value>ALL</value>
+    </string>
+    <string name="bundler" default="ALL">
+        <value>ALL</value>
+        <value os="windows">exe</value>
+        <value os="windows">msi</value>
+        <value os="windows">windows.app</value>
+
+        <value os="linux">dep</value>
+        <value os="linux">rpm</value>
+
+        <value os="macosx">dmg</value>
+        <value os="macosx">pkg</value>
+        <value os="macosx">mac.appStore</value>
+    </string>
+    <string-list name="jvmArgs"></string-list>
+    <string-map name="jvmProperties"></string-map>
+    <string-map name="userJvmArgs"></string-map>
+    <string name="nativeReleaseVersion" default="1.0"></string>
+    <boolean name="needShortcut" default="false"></boolean>
+    <boolean name="needMenu" default="false"></boolean>
+    <string-map name="bundleArguments"></string-map>
+    <string name="appName" default="${project.build.finalName}"></string>
+    <string name="additionalAppResources"></string>
+</maven-goal>

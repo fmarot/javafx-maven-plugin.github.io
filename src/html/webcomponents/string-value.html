@@ -1,4 +1,43 @@
-    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-        <input class="mdl-textfield__input" type="text" id="floatingTextInput" />
-        <label class="mdl-textfield__label" for="floatingTextInput">Text...</label>
-    </div>
+<link rel="import" href="polymer.html">
+
+<dom-module id="string-value">
+    <template>
+        <div>
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                <input class="mdl-textfield__input" type="text" id="floatingTextInput" value="{{value::input}}" />
+                <label class="mdl-textfield__label" for="floatingTextInput">{{label}}</label>
+            </div>
+            <p id="defaultValueHint">Default: <i>{{defaultvalue}}</i></p>
+        </div>
+    </template>
+    <script>
+        Polymer({
+            is: "string-value",
+            properties:{
+                label: String,
+                value: {
+                    type: String,
+                    notify: true
+                },
+                defaultValue:{
+                    type: String,
+                    readOnly: true,
+                    value: function(){
+                        return "";
+                    }
+                }
+            },
+            listeners:{
+                "input":"valueChangedListener"
+            },
+            valueChangedListener: function(){
+                this.set("value", this.value); // inform outer space ;)
+            },
+            attached: function(){
+                if(this.defaultvalue === "" || !this.defaultvalue){
+                    this.$.defaultValueHint.remove();
+                }
+            }
+        });
+    </script>
+</dom-module>

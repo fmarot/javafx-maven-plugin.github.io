@@ -1,0 +1,26 @@
+<link rel="import" href="polymer.html">
+
+<maven-goal cli="web" lifecycle="build-web">
+    <global-goal-values configuration="{{configuration}}"></global-goal-values>
+    <goal-hint>
+        <p>Be aware that this is not as supported as other goals, deploying javafx-apps via JNLP or Applet is error-prone!</p>
+    </goal-hint>
+    <string name="vendor" default="${project.organization.name}" required></string>
+    <string name="webOutputDir" default="${project.build.directory}/jfx/web"></string>
+    <boolean name="needShortcut" default="false"></boolean>
+    <boolean name="needMenu" default="false"></boolean>
+    <string name="preLoader"></string>
+    <boolean default="false" name="allPermissions"></boolean>
+    <int name="width" default="800"></int>
+    <int name="height" default="600"></int>
+    <int name="embeddedWidth" default="800"></int>
+    <int name="embeddedHeight" default="600"></int>
+    <string name="keyStore" default="src/main/deploy/keystore.jks"></string>
+    <string name="keyStoreAlias" default="myalias"></string>
+    <string name="keyStorePassword" default="password"></string>
+    <string name="keyPassword"></string>
+    <string name="keyStoreType" default="jks"></string>
+    <string name="description" default="Sample JavaFX Application."></string>
+    <string name="title" default="Sample JavaFX Application"></string>
+    <string name="j2seVersion" default="1.7+"></string>
+</maven-goal>

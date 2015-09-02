@@ -1,0 +1,46 @@
+<link rel="import" href="polymer.html">
+
+<link rel="import" href="string-value.html">
+<link rel="import" href="boolean-value.html">
+
+<dom-module id="global-goal-values">
+    <template>
+        <span class="shortPropertyDescription">your javafx main class</span>
+        <string-value label="mainClass" value="{{mavenproperties.mainClass.value}}" defaultValue="{{mavenproperties.mainClass.defaultValue}}"></string-value>
+
+        <span class="shortPropertyDescription">do verbose logging-output</span>
+        <boolean-value label="verbose" value="{{mavenproperties.verbose.value}}" defaultValue="{{mavenproperties.verbose.defaultValue}}"></boolean-value>
+
+        <span class="shortPropertyDescription">Output-directory for generated javafx-application</span>
+        <string-value label="jfxAppOutputDir" value="{{mavenproperties.jfxAppOutputDir.value}}" defaultValue="{{mavenproperties.jfxAppOutputDir.defaultValue}}"></string-value>
+
+        <span class="shortPropertyDescription">Filename for generated javafx-application</span>
+        <string-value label="jfxMainAppJarName" value="{{mavenproperties.jfxMainAppJarName.value}}" defaultValue="{{mavenproperties.jfxMainAppJarName.defaultValue}}"></string-value>
+
+        <span class="shortPropertyDescription">Directory of build-files</span>
+        <string-value label="deployDir" value="{{mavenproperties.deployDir.value}}" defaultValue="{{mavenproperties.deployDir.defaultValue}}"></string-value>
+    </template>
+    <script>
+        Polymer({
+            is: "global-goal-values",
+            properties:{
+                configuration:{
+                    type:Object,
+                    notify: true
+                },
+                mavenProperties:{
+                    type:Object,
+                    notify: true
+                },
+                cli: {
+                    type:String,
+                    readOnly: true
+                },
+                lifecycle: {
+                    type:String,
+                    readOnly: true
+                }
+            }
+        });
+    </script>
+</dom-module>

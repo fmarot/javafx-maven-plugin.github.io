@@ -46,6 +46,9 @@ gulp.task("webdeps", function(){
         // MDL
         ,"bower_components/material-design-lite/material.min.js": targetFolder + "/js"
         ,"bower_components/material-design-lite/material.min.css": targetFolder + "/css"
+        // prism (syntax-highlighting)
+        ,"bower_components/prism/prism.js": targetFolder + "/js"
+        ,"bower_components/prism/themes/prism.css": targetFolder + "/css"
     };
     
     var stream = false;

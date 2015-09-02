@@ -1,0 +1,38 @@
+<link rel="import" href="polymer.html">
+
+<dom-module id="boolean-value">
+    <template>
+        <div>
+            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+                <input type="checkbox" id="switcher" class="mdl-switch__input" checked?="{{value}}" />
+                <span class="mdl-switch__label">{{label}}</span>
+            </label>
+            <p id="defaultValueHint">Default: <i>{{defaultvalue}}</i></p>
+        </div>
+    </template>
+    <script>
+        Polymer({
+            is: "boolean-value",
+            properties:{
+                label: String,
+                value: {
+                    type: Boolean,
+                    notify: true
+                },
+                defaultValue:{
+                    type: Boolean,
+                    readOnly: true,
+                    value: function(){
+                        return "";
+                    }
+                }
+            },
+            listeners:{
+                "change":"valueChangedListener"
+            },
+            valueChangedListener: function(){
+                this.set("value", this.$.switcher.checked); // inform outer space ;)
+            }
+        });
+    </script>
+</dom-module>

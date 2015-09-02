@@ -1,12 +1,12 @@
 <link rel="import" href="polymer.html">
-<link rel="import" href="os-value.html">
+<link rel="import" href="selection-button.html">
 
 <dom-module id="os-selection">
     <template>
-        <div>
-            <os-value value="windows" os="{{ selectedos }}">Windows</os-value>
-            <os-value value="linux" os="{{ selectedos }}">Linux</os-value>
-            <os-value value="macosx" os="{{ selectedos }}">Mac OS X</os-value>
+        <div class="selection-group">
+            <selection-button value="windows" currentValue="{{ selectedos }}">Windows</selection-button>
+            <selection-button value="linux" currentValue="{{ selectedos }}">Linux</selection-button>
+            <selection-button value="macosx" currentValue="{{ selectedos }}">Mac OS X</selection-button>
         </div>
     </template>
     <script>

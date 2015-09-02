@@ -1,0 +1,22 @@
+<link rel="import" href="polymer.html">
+<link rel="import" href="selection-button.html">
+
+<dom-module id="build-mechanism-selection">
+    <template>
+        <div class="selection-group">
+            <selection-button value="cli" currentValue="{{ selectedbuildmechanism }}">via CLI</selection-button>
+            <selection-button value="lifecycle" currentValue="{{ selectedbuildmechanism }}">via Maven-lifecycle</selection-button>
+        </div>
+    </template>
+    <script>
+        Polymer({
+            is: "build-mechanism-selection",
+            properties:{
+                selectedbuildmechanism:{
+                    type:String,
+                    notify:true
+                }
+            }
+        });
+    </script>
+</dom-module>

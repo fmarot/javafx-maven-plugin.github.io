@@ -1,6 +1,6 @@
 <link rel="import" href="polymer.html">
 
-<dom-module id="os-value">
+<dom-module id="selection-button">
     <template>
         <!-- Raised button with ripple -->
         <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">
@@ -9,27 +9,27 @@
     </template>
     <script>
         Polymer({
-            is: "os-value",
+            is: "selection-button",
             properties:{
                 value: String,
-                os:{
+                currentvalue:{
                     type:String,
                     notify: true,
-                    observer: "osGotChanged"
+                    observer: "valueGotChanged"
                 }
             },
             listeners:{
-                "click":"selectNewOS"
+                "click":"selectNewMechanism"
             },
             attached: function(){
                 // call this to get initial selection
-                this.osGotChanged(this.os);
+                this.valueGotChanged(this.currentvalue);
             },
-            selectNewOS: function(){
-                this.set("os", this.value);
+            selectNewMechanism: function(){
+                this.set("currentvalue", this.value);
             },
-            osGotChanged: function(newValue){
-                // mark selected os-button
+            valueGotChanged: function(newValue){
+                // mark selected button
                 var cssClassToAddOnMatching = "mdl-button--colored";
                 var classesList = Polymer.dom(this.root).querySelectorAll("button")[0].classList;
                 if(this.value === newValue){

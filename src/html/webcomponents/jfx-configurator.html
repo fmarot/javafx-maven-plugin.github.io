@@ -1,131 +1,121 @@
 <link rel="import" href="polymer.html">
+
 <link rel="import" href="os-selection.html">
+<link rel="import" href="build-mechanism-selection.html">
+<link rel="import" href="goal-selection.html">
+
+<link rel="import" href="build-jar-goal.html">
+
+<link rel="import" href="configuration-output.html">
 
 <dom-module id="jfx-configurator">
     <template>
-        <p>Selected OS: <span>{{configuration.selectedOS}}</span></p>
-        <configuration-settings>
-            <os-selection selectedOS="{{configuration.selectedOS}}"></os-selection>
-            <maven-goals>
-                <shared-values>
-                    <boolean default="false" name="verbose"></boolean>
-                    <string name="mainClass" required></string>
-                    <string name="jfxAppOutputDir" default="${project.build.directory}/jfx/app"></string>
-                    <string name="jfxMainAppJarName" default="${project.build.finalName}-jfx.jar"></string>
-                    <string name="deployDir" default="${project.basedir}/src/main/deploy"></string>
-                </shared-values>
-                
-                <maven-goal cli="jar" lifecycle="build-jar">
-                    <boolean default="false" name="css2bin"></boolean>
-                    <string name="preLoader"></string>
-                    <boolean name="updateExistingJar" default="false"></boolean>
-                    <boolean name="allPermissions" default="false"></boolean>
-                    <string-map name="manifestAttributes"></string-map>
-                    <boolean name="addPackagerJar" default="true"></boolean>
-                </maven-goal>
-                
-                <maven-goal cli="native" lifecycle="build-native" dependsOn="build-jar">
-                    <hint os="windows">
-                        <p>Building on Windows requires some tools to be installed:</p>
-                        <ul>
-                            <li>EXE bundler: Please install WiX</li>
-                            <li>MSI bundler: Please install InnoSetup</li>
-                        </ul>
-                    </hint>
-                    <hint os="macosx">
-                        <p>Building on Mac OS X requires some special information.</p>
-                    </hint>
-                    <hint os="linux">
-                        <p>Building on Linux requires some special information, for example a LICENSE when creating DEP-packages.</p>
-                    </hint>
-                    <string name="identifier" os="macosx"></string>
-                    <string name="vendor" default="${project.organization.name}" required></string>
-                    <string name="nativeOutputDir" default="${project.build.directory}/jfx/native"></string>
-                    <string name="bundleType" default="ALL" deprecated>
-                        <note>
-                            <p>BundleType was refactored/replaced in javafx itself, please use/upgrade to the new bundler-property</p>
-                        </note>
-                        <value>ALL</value>
-                    </string>
-                    <string name="bundler" default="ALL">
-                        <value>ALL</value>
-                        <value os="windows">exe</value>
-                        <value os="windows">msi</value>
-                        <value os="windows">windows.app</value>
-
-                        <value os="linux">dep</value>
-                        <value os="linux">rpm</value>
-
-                        <value os="macosx">dmg</value>
-                        <value os="macosx">pkg</value>
-                        <value os="macosx">mac.appStore</value>
-                    </string>
-                    <string-list name="jvmArgs"></string-list>
-                    <string-map name="jvmProperties"></string-map>
-                    <string-map name="userJvmArgs"></string-map>
-                    <string name="nativeReleaseVersion" default="1.0"></string>
-                    <boolean name="needShortcut" default="false"></boolean>
-                    <boolean name="needMenu" default="false"></boolean>
-                    <string-map name="bundleArguments"></string-map>
-                    <string name="appName" default="${project.build.finalName}"></string>
-                    <string name="additionalAppResources"></string>
-                </maven-goal>
-                <maven-goal cli="web" lifecycle="build-web">
-                    <hint>
-                        <p>Be aware that this is not as supported as other goals, deploying javafx-apps via JNLP or Applet is error-prone!</p>
-                    </hint>
-                    <string name="vendor" default="${project.organization.name}" required></string>
-                    <string name="webOutputDir" default="${project.build.directory}/jfx/web"></string>
-                    <boolean name="needShortcut" default="false"></boolean>
-                    <boolean name="needMenu" default="false"></boolean>
-                    <string name="preLoader"></string>
-                    <boolean default="false" name="allPermissions"></boolean>
-                    <int name="width" default="800"></int>
-                    <int name="height" default="600"></int>
-                    <int name="embeddedWidth" default="800"></int>
-                    <int name="embeddedHeight" default="600"></int>
-                    <string name="keyStore" default="src/main/deploy/keystore.jks"></string>
-                    <string name="keyStoreAlias" default="myalias"></string>
-                    <string name="keyStorePassword" default="password"></string>
-                    <string name="keyPassword"></string>
-                    <string name="keyStoreType" default="jks"></string>
-                    <string name="description" default="Sample JavaFX Application."></string>
-                    <string name="title" default="Sample JavaFX Application"></string>
-                    <string name="j2seVersion" default="1.7+"></string>
-                </maven-goal>
-                <maven-goal cli="generate-key-store" without-shared>
-                    <boolean name="overwriteKeyStore" default="false"></boolean>
-                    <string name="keyStore" default="src/main/deploy/keystore.jks"></string>
-                    <string name="keyStoreAlias" default="myalias"></string>
-                    <string name="keyStorePassword" default="password"></string>
-                    <string name="keyPassword"></string>
-                    <string name="certDomain"></string>
-                    <string name="certOrgUnit"></string>
-                    <string name="certOrg"></string>
-                    <string name="certState"></string>
-                    <string name="certCountry"></string>
-                </maven-goal>
-            </maven-goals>
-        </configuration-settings>
-        
-        <configuration-output></configuration-output>
+        <div class="mdl-grid">
+            <div class="mdl-cell mdl-cell--6-col">
+                <div class$="{{configuration.selectedOS}}">
+                    <configuration-settings>
+                        <span class="shortPropertyDescription">Please select the OS of your build-system:</span>
+                        <os-selection selectedOS="{{configuration.selectedOS}}"></os-selection>
+                        <span class="shortPropertyDescription">What do you want to create?</span>
+                        <goal-selection selectedGoal="{{configuration.selectedGoal}}"></goal-selection>
+                        <span class="shortPropertyDescription">How do you want to use this plugin?</span>
+                        <build-mechanism-selection selectedBuildMechanism="{{configuration.selectedBuildMechanism}}"></build-mechanism-selection>
+                        
+                        <build-jar-goal configuration="{{configuration}}" mavenProperties="{{mavenProperties}}" cli="jar" lifecycle="build-jar"></build-jar-goal>
+                        <!--
+                        <build-native-goal configuration="{{configuration}}" mavenProperties="{{mavenProperties}}" cli="native" lifecycle="build-native"></build-native-goal>
+                        <build-web-goal configuration="{{configuration}}" mavenProperties="{{mavenProperties}}" cli="web" lifecycle="build-web"></build-web-goal>
+                        <generate-key-store-goal configuration="{{configuration}}" mavenProperties="{{mavenProperties}}" cli="generate-key-store"></generate-key-store-goal>
+                        -->
+                    </configuration-settings>
+                </div>
+            </div>
+            <div class="mdl-cell mdl-cell--6-col">
+                <configuration-output configuration="{{configuration}}" mavenProperties="{{mavenProperties}}" version="{{version}}"></configuration-output>
+            </div>
+        </div>
     </template>
     <script>
         Polymer({
             is: "jfx-configurator",
+            properties:{
+                version: String,
+                configuration:{
+                    type:Object,
+                    value: function() {
+                        return {
+                            selectedOS: "none",
+                            selectedBuildMechanism: "cli",
+                            selectedGoal: "jar"
+                        };
+                    }
+                },
+                mavenProperties:{
+                    type:Object,
+                    value: function() {
+                        return {
+                            mainClass: {
+                                value: "",
+                                defaultValue: ""
+                            },
+                            verbose: {
+                                value: false,
+                                defaultValue: false
+                            },
+                            jfxAppOutputDir: {
+                                value: "",
+                                defaultValue: "$\{project.build.directory\}/jfx/app"
+                            },
+                            jfxMainAppJarName: {
+                                value: "",
+                                defaultValue: "${project.build.finalName}-jfx.jar"
+                            },
+                            deployDir: {
+                                value: "",
+                                defaultValue: "${project.basedir}/src/main/deploy"
+                            },
+                            css2bin:{
+                                value: false,
+                                defaultValue: false
+                            },
+                            preLoader:{
+                                value: "",
+                                defaultValue: ""
+                            },
+                            updateExistingJar:{
+                                value: false,
+                                defaultValue: false
+                            },
+                            allPermissions:{
+                                value: false,
+                                defaultValue: false
+                            },
+                            addPackagerJar:{
+                                value: true,
+                                defaultValue: true
+                            }
+                        };
+                    }
+                }
+            },
             ready: function() {
                 function isOS(osLabel){
                     return navigator.appVersion.indexOf(osLabel) !== -1;
                 }
-                this.configuration = {
-                    selectedOS: "none"
-                };
                 
                 // conditionally set selected OS
                 if(isOS("Linux")) this.set("configuration.selectedOS", "linux");
                 if(isOS("Mac")) this.set("configuration.selectedOS", "macosx");
                 if(isOS("Win")) this.set("configuration.selectedOS", "windows");
             }
+            /*
+            , observers:[
+                "somethingChanged(mavenProperties.*)"
+            ]
+            , somethingChanged: function(event){
+                this.set(event.path, event.value);
+            }
+            */
         });
     </script>
 </dom-module>

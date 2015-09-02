@@ -1,0 +1,14 @@
+<link rel="import" href="polymer.html">
+
+<maven-goal cli="generate-key-store" without-shared>
+    <boolean name="overwriteKeyStore" default="false"></boolean>
+    <string name="keyStore" default="src/main/deploy/keystore.jks"></string>
+    <string name="keyStoreAlias" default="myalias"></string>
+    <string name="keyStorePassword" default="password"></string>
+    <string name="keyPassword"></string>
+    <string name="certDomain"></string>
+    <string name="certOrgUnit"></string>
+    <string name="certOrg"></string>
+    <string name="certState"></string>
+    <string name="certCountry"></string>
+</maven-goal>

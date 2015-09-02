@@ -1,0 +1,99 @@
+<link rel="import" href="polymer.html">
+
+<script type="text/javascript" src="../js/prism.js"></script>
+
+<dom-module id="configuration-output">
+    <template>
+        <div style="display: none;" id="sourceCode">
+&lt;plugin&gt;
+    &lt;groupId&gt;com.zenjava&lt;/groupId&gt;
+    &lt;artifactId&gt;javafx-maven-plugin&lt;/artifactId&gt;
+    &lt;version&gt;<span>{{version}}</span>&lt;/version&gt;
+    &lt;configuration&gt;
+        &lt;mainClass&gt;<span>{{ mavenproperties.mainClass.value }}</span>&lt;/mainClass&gt;
+        <span hidden$="{{(mavenproperties.verbose | hasDefaultValue)}}">&lt;verbose&gt;<span>{{ mavenproperties.verbose.value }}</span>&lt;/verbose&gt;</span>
+        // CLI -> nothing to change
+        // lifecycle -> add executions
+    &lt;/configuration&gt;
+&lt;/plugin&gt;
+        </div>
+        <pre class="language-markup" id="output"><code></code></pre>
+    </template>
+
+    <script>
+        Polymer({
+            is: "configuration-output",
+            properties:{
+                configuration: Object,
+                version: String,
+                mavenProperties: Object
+            },
+            attached: function(){
+                this.refreshCode();
+            },
+            hasDefaultValue: function(someEntry){
+                console.log("hasDefaultValue", someEntry);
+                return someEntry.defaultValue === someEntry.value;
+            }
+            , observers:[
+                // don't use this naming for function-names: "*Changed"
+                // properties to be watched have to be "lower-cased"
+                "doRefreshStuffWhenSomethingChanged(mavenproperties.*)"
+                , "doRefreshStuffWhenSomethingChanged(configuration.*)"
+            ],
+            doRefreshStuffWhenSomethingChanged: function(event){
+                this.refreshCode();
+            },
+            refreshCode: function(){
+                var self = this;
+                function wrapperWithinPluginCode(configurationString){
+                    var rows = [
+                        self.getStringValueTag("groupId", "com.zenjava")
+                        , self.getStringValueTag("artifactId", "javafx-maven-plugin")
+                        , self.getStringValueTag("version", self.version)
+                        , self.getStringValueTag("configuration", configurationString)
+                    ];
+                    // check CLI/lifecycle-style
+                    if(self.configuration.selectedBuildMechanism !== "cli"){
+                    /*
+                        <executions>
+                            <!-- required before build-native -->
+                            <execution>
+                                <id>create-jfxjar</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>build-jar</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>create-native</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>build-native</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    */
+                    }
+                    return rows.join("\n\t");
+                }
+                function getFullPluginConfigurationCode(){
+                    var configurationCode = wrapperWithinPluginCode("");
+                    return self.getStringValueTag("plugin", "\n\t" + configurationCode + "\n");
+                }
+                function addIndentation(content){
+                    var rowResult = content.split("\n").join("\n\t");
+                    return "\t" + rowResult;
+                }
+                Polymer.dom(this.$.output).innerHTML = getFullPluginConfigurationCode();
+                Prism.highlightElement(this.$.output);
+            },
+            getStringValueTag: function(tagName, value){
+                return "&lt;" + tagName + "&gt;" + value + "&lt;" + "/" + tagName + "&gt;";
+            },
+            getBooleanValueTag: function(tagName, value){
+                return this.getStringValueTag(tagName, (!!value)?"true":"false");
+            }
+        });
+    </script>
+</dom-module>
