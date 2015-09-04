@@ -4,19 +4,6 @@
 
 <dom-module id="configuration-output">
     <template>
-        <div style="display: none;" id="sourceCode">
-&lt;plugin&gt;
-    &lt;groupId&gt;com.zenjava&lt;/groupId&gt;
-    &lt;artifactId&gt;javafx-maven-plugin&lt;/artifactId&gt;
-    &lt;version&gt;<span>{{version}}</span>&lt;/version&gt;
-    &lt;configuration&gt;
-        &lt;mainClass&gt;<span>{{ mavenproperties.mainClass.value }}</span>&lt;/mainClass&gt;
-        <span hidden$="{{(mavenproperties.verbose | hasDefaultValue)}}">&lt;verbose&gt;<span>{{ mavenproperties.verbose.value }}</span>&lt;/verbose&gt;</span>
-        // CLI -> nothing to change
-        // lifecycle -> add executions
-    &lt;/configuration&gt;
-&lt;/plugin&gt;
-        </div>
         <pre class="language-markup" id="output"><code></code></pre>
         <p>You should run this on you command-line: <code id="callCommand"></code></p>
     </template>
@@ -38,8 +25,9 @@
                 return someEntry.defaultValue === someEntry.value;
             }
             , observers:[
-                // don't use this naming for function-names: "*Changed"
-                // properties to be watched have to be "lower-cased"
+                // information about polymer:
+                // - don't use this naming for function-names: "*Changed"
+                // - properties to be watched have to be "lower-cased"
                 "doRefreshStuffWhenSomethingChanged(mavenproperties.*)"
                 , "doRefreshStuffWhenSomethingChanged(configuration.*)"
             ],
@@ -48,47 +36,74 @@
             },
             refreshCode: function(){
                 var self = this;
+                function getStringValueTag(tagName, value){
+                    return "&lt;" + tagName + "&gt;" + value + "&lt;" + "/" + tagName + "&gt;";
+                }
+                function getBooleanValueTag(tagName, value){
+                    return getStringValueTag(tagName, (!!value)?"true":"false");
+                }
                 function wrapperWithinPluginCode(configurationString){
                     var rows = [
-                        self.getStringValueTag("groupId", "com.zenjava")
-                        , self.getStringValueTag("artifactId", "javafx-maven-plugin")
-                        , self.getStringValueTag("version", self.version)
-                        , self.getStringValueTag("configuration", configurationString)
+                        getStringValueTag("groupId", "com.zenjava")
+                        , getStringValueTag("artifactId", "javafx-maven-plugin")
+                        , getStringValueTag("version", self.version)
+                        , getStringValueTag("configuration", "\n" + addIndentation(configurationString) + "\n")
                     ];
                     // check CLI/lifecycle-style
                     if(self.configuration.selectedBuildMechanism !== "cli"){
-                        var jarExecutionRows = [
-                            self.getStringValueTag("id", "create-jfxjar")
-                            self.getStringValueTag("phase", "package")
-                            self.getStringValueTag("goals", "\n" + 
-                                addIndentation( self.getStringValueTag("goal", "build-jar") )
-                            + "\n")
-                        ];
-                    /*
-                        <executions>
-                            <!-- required before build-native -->
-                            <execution>
-                                <id>create-jfxjar</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>build-jar</goal>
-                                </goals>
-                            </execution>
-                            <execution>
-                                <id>create-native</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>build-native</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    */
+                        var jarExecutionRows = [];
+                        if(self.configuration.selectedLifecycle === "build-jar" || self.configuration.selectedLifecycle === "build-native" || self.configuration.selectedLifecycle === "build-web"){
+                            // native
+                            if( self.configuration.selectedLifecycle === "build-native" ){
+                                jarExecutionRows[jarExecutionRows.length] = "&lt;"+ "!-- required before build-native --" +"&gt;";
+                            }
+                            // web
+                            if( self.configuration.selectedLifecycle === "build-web" ){
+                                jarExecutionRows[jarExecutionRows.length] = "&lt;"+ "!-- required before build-web --" +"&gt;";
+                            }
+                            jarExecutionRows[jarExecutionRows.length] = getStringValueTag("id", "create-jfxjar");
+                            jarExecutionRows[jarExecutionRows.length] = getStringValueTag("phase", "package");
+                            jarExecutionRows[jarExecutionRows.length] = getStringValueTag("goals", "\n" + 
+                                    addIndentation( getStringValueTag("goal", "build-jar") )
+                                + "\n");
+                            var executionRows = [];
+                            var jarExecution = getStringValueTag("execution", "\n"+addIndentation( jarExecutionRows.join("\n") ) +"\n");
+                            var nativeExecution = "";
+                            executionRows[executionRows.length] = jarExecution;
+
+                            // native
+                            if(self.configuration.selectedLifecycle === "build-native"){
+                                var nativeExecutionRows = [];
+                                nativeExecutionRows[nativeExecutionRows.length] = getStringValueTag("id", "create-native");
+                                nativeExecutionRows[nativeExecutionRows.length] = getStringValueTag("phase", "package");
+                                nativeExecutionRows[nativeExecutionRows.length] = getStringValueTag("goals", "\n" + 
+                                        addIndentation( getStringValueTag("goal", "build-native") )
+                                    + "\n");
+                                nativeExecution = getStringValueTag("execution", "\n"+addIndentation( nativeExecutionRows.join("\n") ) +"\n");
+                                executionRows[executionRows.length] = nativeExecution;
+                            }
+                            // web
+                            if(self.configuration.selectedLifecycle === "build-web"){
+                                var webExecutionRows = [];
+                                webExecutionRows[webExecutionRows.length] = getStringValueTag("id", "create-web");
+                                webExecutionRows[webExecutionRows.length] = getStringValueTag("phase", "package");
+                                webExecutionRows[webExecutionRows.length] = getStringValueTag("goals", "\n" + 
+                                        addIndentation( getStringValueTag("goal", "build-web") )
+                                    + "\n");
+                                webExecutionRows = getStringValueTag("execution", "\n"+addIndentation( webExecutionRows.join("\n") ) +"\n");
+                                executionRows[executionRows.length] = webExecutionRows;
+                            }
+                            
+                            rows[rows.length] = getStringValueTag("executions", "\n" + 
+                                        addIndentation( executionRows.join("\n" ) )
+                                    + "\n");
+                        }
                     }
                     return rows.join("\n");
                 }
                 function getFullPluginConfigurationCode(){
-                    var configurationCode = wrapperWithinPluginCode("");
-                    return self.getStringValueTag("plugin", "\n" + addIndentation( configurationCode) + "\n");
+                    var configurationCode = wrapperWithinPluginCode("TODO");
+                    return getStringValueTag("plugin", "\n" + addIndentation( configurationCode) + "\n");
                 }
                 function addIndentation(content){
                     var rowResult = content.split("\n").join("\n\t");
@@ -108,12 +123,6 @@
 
                 this.$.callCommand.innerHTML = command;
                 Prism.highlightElement(this.$.callCommand);
-            },
-            getStringValueTag: function(tagName, value){
-                return "&lt;" + tagName + "&gt;" + value + "&lt;" + "/" + tagName + "&gt;";
-            },
-            getBooleanValueTag: function(tagName, value){
-                return this.getStringValueTag(tagName, (!!value)?"true":"false");
             }
         });
     </script>
