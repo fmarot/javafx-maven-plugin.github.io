@@ -2,29 +2,38 @@
 <link rel="import" href="global-goal-values.html">
 
 <link rel="import" href="string-value.html">
+<link rel="import" href="string-map.html">
 <link rel="import" href="boolean-value.html">
 
 <dom-module id="build-jar-goal">
     <template>
-        <global-goal-values mavenProperties="{{mavenproperties}}"></global-goal-values>
-        
-        <span class="shortPropertyDescription">Compile CSS to binary-format</span>
-        <boolean-value label="css2bin" value="{{mavenproperties.css2bin.value}}" defaultValue="{{mavenproperties.css2bin.defaultValue}}"></boolean-value>
+        <div hidden$="{{!visible}}">
+            <global-goal-values mavenProperties="{{mavenproperties}}"></global-goal-values>
+            
+            <boolean-value label="css2bin" value="{{mavenproperties.css2bin.value}}" defaultValue="{{mavenproperties.css2bin.defaultValue}}">
+                Compile CSS to binary-format
+            </boolean-value>
 
-        <span class="shortPropertyDescription">class-name of javafx-preloader</span>
-        <string-value label="preLoader" value="{{mavenproperties.preLoader.value}}" defaultValue="{{mavenproperties.preLoader.defaultValue}}"></string-value>
+            <string-value label="preLoader" value="{{mavenproperties.preLoader.value}}" defaultValue="{{mavenproperties.preLoader.defaultValue}}">
+                class-name of javafx-preloader
+            </string-value>
 
-        <span class="shortPropertyDescription">Update existing JAR-file</span>
-        <boolean-value label="updateExistingJar" value="{{mavenproperties.updateExistingJar.value}}" defaultValue="{{mavenproperties.updateExistingJar.defaultValue}}"></boolean-value>
+            <boolean-value label="updateExistingJar" value="{{mavenproperties.updateExistingJar.value}}" defaultValue="{{mavenproperties.updateExistingJar.defaultValue}}">
+                Update existing JAR-file
+            </boolean-value>
 
-        <span class="shortPropertyDescription">Request priviledged permissions</span>
-        <boolean-value label="allPermissions" value="{{mavenproperties.allPermissions.value}}" defaultValue="{{mavenproperties.allPermissions.defaultValue}}"></boolean-value>
+            <boolean-value label="allPermissions" value="{{mavenproperties.allPermissions.value}}" defaultValue="{{mavenproperties.allPermissions.defaultValue}}">
+                Request priviledged permissions
+            </boolean-value>
 
-        <!-- TODO -->
-        <string-map name="manifestAttributes"></string-map>
-        
-        <span class="shortPropertyDescription">Add packager.jar to dependencies (when provided as system-scoped)</span>
-        <boolean-value label="addPackagerJar" value="{{mavenproperties.addPackagerJar.value}}" defaultValue="{{mavenproperties.addPackagerJar.defaultValue}}"></boolean-value>
+            <string-map label="manifestAttributes" value="{{mavenproperties.manifestAttributes.value}}">
+                Add entries for the manifest-file
+            </string-map>
+            
+            <boolean-value label="addPackagerJar" value="{{mavenproperties.addPackagerJar.value}}" defaultValue="{{mavenproperties.addPackagerJar.defaultValue}}">
+                Add packager.jar to dependencies (when provided as system-scoped)
+            </boolean-value>
+        </div>
     </template>
     <script>
         Polymer({
@@ -32,14 +41,38 @@
             properties:{
                 configuration:{
                     type:Object,
-                    notify: true
+                    observer: "checkVisibility"
                 },
                 mavenProperties:{
                     type:Object,
                     notify: true
                 },
                 cli: String,
-                lifecycle: String
+                lifecycle: String,
+                
+                visible: {
+                    type: Boolean,
+                    value: function(){
+                        return false;
+                    }
+                }
+            },
+            observers: [
+                "checkVisibility(configuration.*)"
+            ],
+            checkVisibility: function(event){
+                var foundVisibilityFlag = false;
+                if(this.configuration.selectedBuildMechanism === "cli"){
+                    this.set("visible", this.cli === this.configuration.selectedGoal);
+                    foundVisibilityFlag = true;
+                }
+                if(this.configuration.selectedBuildMechanism === "lifecycle"){
+                    this.set("visible", this.lifecycle === this.configuration.selectedLifecycle);
+                    foundVisibilityFlag = true;
+                }
+                if(!foundVisibilityFlag){
+                    this.set("visible", false);
+                }
             }
         });
     </script>

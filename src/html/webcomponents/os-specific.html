@@ -1,0 +1,28 @@
+<link rel="import" href="polymer.html">
+
+<dom-module id="os-specific">
+    <template>
+        <div hidden$="{{!visible}}">
+            <content></content>
+        </div>
+    </template>
+    <script>
+        Polymer({
+            is: "os-specific",
+            properties:{
+                selectedos:{
+                    type: String,
+                    observer: "updateShowCondition"
+                },
+                os: String,
+                visible:{
+                    type:Boolean,
+                    value:true
+                }
+            },
+            updateShowCondition: function(){
+                this.set("visible", this.os === this.selectedos);
+            }
+        });
+    </script>
+</dom-module>

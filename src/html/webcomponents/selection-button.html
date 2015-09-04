@@ -1,11 +1,17 @@
 <link rel="import" href="polymer.html">
 
 <dom-module id="selection-button">
+    <style>
+        .button{
+            padding-bottom:20px;
+        }
+    </style>
     <template>
-        <!-- Raised button with ripple -->
-        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">
-            <content></content>
-        </button>
+        <div class="button">
+            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">
+                <content></content>
+            </button>
+        </div>
     </template>
     <script>
         Polymer({

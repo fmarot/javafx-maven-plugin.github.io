@@ -1,14 +1,91 @@
 <link rel="import" href="polymer.html">
 
-<maven-goal cli="generate-key-store" without-shared>
-    <boolean name="overwriteKeyStore" default="false"></boolean>
-    <string name="keyStore" default="src/main/deploy/keystore.jks"></string>
-    <string name="keyStoreAlias" default="myalias"></string>
-    <string name="keyStorePassword" default="password"></string>
-    <string name="keyPassword"></string>
-    <string name="certDomain"></string>
-    <string name="certOrgUnit"></string>
-    <string name="certOrg"></string>
-    <string name="certState"></string>
-    <string name="certCountry"></string>
-</maven-goal>
+<link rel="import" href="boolean-value.html">
+<link rel="import" href="string-value.html">
+
+<dom-module id="generate-key-store-goal">
+    <template>
+        <div hidden$="{{!visible}}">
+            <boolean-value label="overwriteKeyStore" value="{{mavenproperties.overwriteKeyStore.value}}" defaultValue="{{mavenproperties.overwriteKeyStore.defaultValue}}">
+                overwriteKeyStore
+            </boolean-value>
+            
+            <string-value label="keyStore" value="{{mavenproperties.keyStore.value}}" defaultValue="{{mavenproperties.keyStore.defaultValue}}">
+                keyStore
+            </string-value>
+            <string-value label="keyStoreAlias" value="{{mavenproperties.keyStoreAlias.value}}" defaultValue="{{mavenproperties.keyStoreAlias.defaultValue}}">
+                keyStoreAlias
+            </string-value>
+            <string-value label="keyStorePassword" value="{{mavenproperties.keyStorePassword.value}}" defaultValue="{{mavenproperties.keyStorePassword.defaultValue}}">
+                keyStorePassword
+            </string-value>
+            <string-value label="keyPassword" value="{{mavenproperties.keyPassword.value}}" defaultValue="{{mavenproperties.keyPassword.defaultValue}}">
+                keyPassword
+            </string-value>
+            
+            <string-value label="certDomain" value="{{mavenproperties.certDomain.value}}" defaultValue="{{mavenproperties.certDomain.defaultValue}}">
+                certDomain
+            </string-value>
+            <string-value label="certOrgUnit" value="{{mavenproperties.certOrgUnit.value}}" defaultValue="{{mavenproperties.certOrgUnit.defaultValue}}">
+                certOrgUnit
+            </string-value>
+            <string-value label="certOrg" value="{{mavenproperties.certOrg.value}}" defaultValue="{{mavenproperties.certOrg.defaultValue}}">
+                certOrg
+            </string-value>
+            <string-value label="certState" value="{{mavenproperties.certState.value}}" defaultValue="{{mavenproperties.certState.defaultValue}}">
+                certState
+            </string-value>
+            <string-value label="certCountry" value="{{mavenproperties.certCountry.value}}" defaultValue="{{mavenproperties.certCountry.defaultValue}}">
+                certCountry
+            </string-value>
+        </div>
+    </template>
+    <script>
+        Polymer({
+            is: "generate-key-store-goal",
+            properties:{
+                configuration:{
+                    type:Object,
+                    observer: "checkVisibility"
+                },
+                mavenProperties:{
+                    type:Object,
+                    notify: true
+                },
+                cli: {
+                    type: String
+                },
+                lifecycle: {
+                    type: String,
+                    value: function(){
+                        return "none";
+                    }
+                },
+                
+                visible: {
+                    type: Boolean,
+                    value: function(){
+                        return false;
+                    }
+                }
+            },
+            observers: [
+                "checkVisibility(configuration.*)"
+            ],
+            checkVisibility: function(event){
+                var foundVisibilityFlag = false;
+                if(this.configuration.selectedBuildMechanism === "cli"){
+                    this.set("visible", this.cli === this.configuration.selectedGoal);
+                    foundVisibilityFlag = true;
+                }
+                if(this.configuration.selectedBuildMechanism === "lifecycle"){
+                    this.set("visible", this.lifecycle === this.configuration.selectedLifecycle);
+                    foundVisibilityFlag = true;
+                }
+                if(!foundVisibilityFlag){
+                    this.set("visible", false);
+                }
+            }
+        });
+    </script>
+</dom-module>

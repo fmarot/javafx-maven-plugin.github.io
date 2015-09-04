@@ -5,6 +5,9 @@
 <link rel="import" href="goal-selection.html">
 
 <link rel="import" href="build-jar-goal.html">
+<link rel="import" href="build-native-goal.html">
+<link rel="import" href="build-web-goal.html">
+<link rel="import" href="generate-key-store-goal.html">
 
 <link rel="import" href="configuration-output.html">
 
@@ -13,21 +16,21 @@
         <div class="mdl-grid">
             <div class="mdl-cell mdl-cell--6-col">
                 <div class$="{{configuration.selectedOS}}">
-                    <configuration-settings>
-                        <span class="shortPropertyDescription">Please select the OS of your build-system:</span>
-                        <os-selection selectedOS="{{configuration.selectedOS}}"></os-selection>
-                        <span class="shortPropertyDescription">What do you want to create?</span>
-                        <goal-selection selectedGoal="{{configuration.selectedGoal}}"></goal-selection>
-                        <span class="shortPropertyDescription">How do you want to use this plugin?</span>
-                        <build-mechanism-selection selectedBuildMechanism="{{configuration.selectedBuildMechanism}}"></build-mechanism-selection>
-                        
-                        <build-jar-goal configuration="{{configuration}}" mavenProperties="{{mavenProperties}}" cli="jar" lifecycle="build-jar"></build-jar-goal>
-                        <!--
-                        <build-native-goal configuration="{{configuration}}" mavenProperties="{{mavenProperties}}" cli="native" lifecycle="build-native"></build-native-goal>
-                        <build-web-goal configuration="{{configuration}}" mavenProperties="{{mavenProperties}}" cli="web" lifecycle="build-web"></build-web-goal>
-                        <generate-key-store-goal configuration="{{configuration}}" mavenProperties="{{mavenProperties}}" cli="generate-key-store"></generate-key-store-goal>
-                        -->
-                    </configuration-settings>
+                    <os-selection configuration="{{configuration}}">
+                        Please select the operating system of your build-environment:
+                    </os-selection>
+                    <goal-selection configuration="{{configuration}}">
+                        What do you want to create?
+                    </goal-selection>
+                    <build-mechanism-selection configuration="{{configuration}}">
+                        How do you want to call this plugin/create your result?
+                    </build-mechanism-selection>
+
+                    <build-jar-goal configuration="{{configuration}}" mavenProperties="{{mavenProperties}}" cli="jar" lifecycle="build-jar"></build-jar-goal>
+                    <build-native-goal configuration="{{configuration}}" mavenProperties="{{mavenProperties}}" cli="native" lifecycle="build-native"></build-native-goal>
+
+                    <build-web-goal configuration="{{configuration}}" mavenProperties="{{mavenProperties}}" cli="web" lifecycle="build-web"></build-web-goal>
+                    <generate-key-store-goal configuration="{{configuration}}" mavenProperties="{{mavenProperties}}" cli="generate-key-store"></generate-key-store-goal>
                 </div>
             </div>
             <div class="mdl-cell mdl-cell--6-col">
@@ -46,7 +49,8 @@
                         return {
                             selectedOS: "none",
                             selectedBuildMechanism: "cli",
-                            selectedGoal: "jar"
+                            selectedGoal: "jar",
+                            selectedLifecycle: "build-jar"
                         };
                     }
                 },
@@ -64,7 +68,7 @@
                             },
                             jfxAppOutputDir: {
                                 value: "",
-                                defaultValue: "$\{project.build.directory\}/jfx/app"
+                                defaultValue: "${project.build.directory}/jfx/app"
                             },
                             jfxMainAppJarName: {
                                 value: "",
@@ -74,11 +78,13 @@
                                 value: "",
                                 defaultValue: "${project.basedir}/src/main/deploy"
                             },
+                            
+                            // ----------------------- jfx:jar
                             css2bin:{
                                 value: false,
                                 defaultValue: false
                             },
-                            preLoader:{
+                            preLoader:{ // "jfx:web" too
                                 value: "",
                                 defaultValue: ""
                             },
@@ -86,13 +92,131 @@
                                 value: false,
                                 defaultValue: false
                             },
-                            allPermissions:{
+                            allPermissions:{ // "jfx:web" too
                                 value: false,
                                 defaultValue: false
                             },
                             addPackagerJar:{
                                 value: true,
                                 defaultValue: true
+                            },
+                            
+                            // ----------------------- jfx:native
+                            identifier:{
+                                value: "",
+                                defaultValue: ""
+                            },
+                            vendor:{ // "jfx:web" too
+                                value: "",
+                                defaultValue: "${project.organization.name}"
+                            },
+                            nativeOutputDir:{
+                                value: "",
+                                defaultValue: "${project.build.directory}/jfx/native"
+                            },
+                            bundleType:{
+                                value: "",
+                                defaultValue: "ALL"
+                            },
+                            bundler:{
+                                value: "",
+                                defaultValue: "ALL"
+                            },
+                            nativeReleaseVersion:{
+                                value: "",
+                                defaultValue: "1.0"
+                            },
+                            needShortcut:{ // "jfx:web" too
+                                value: false,
+                                defaultValue: false
+                            },
+                            needMenu:{ // "jfx:web" too
+                                value: false,
+                                defaultValue: false
+                            },
+                            appName:{
+                                value: "",
+                                defaultValue: "${project.build.finalName}"
+                            },
+                            
+                            // ----------------------- jfx:web
+                            webOutputDir:{
+                                value: "",
+                                defaultValue: "${project.build.directory}/jfx/web"
+                            },
+                            width:{
+                                value: "",
+                                defaultValue: "800"
+                            },
+                            height:{
+                                value: "",
+                                defaultValue: "600"
+                            },
+                            embeddedWidth:{
+                                value: "",
+                                defaultValue: "800"
+                            },
+                            embeddedHeight:{
+                                value: "",
+                                defaultValue: "600"
+                            },
+                            keyStore:{ // "jfx:generate-key-store" too
+                                value: "",
+                                defaultValue: "src/main/deploy/keystore.jks"
+                            },
+                            keyStoreAlias:{ // "jfx:generate-key-store" too
+                                value: "",
+                                defaultValue: "myalias"
+                            },
+                            keyStorePassword:{ // "jfx:generate-key-store" too
+                                value: "",
+                                defaultValue: "password"
+                            },
+                            keyPassword:{ // "jfx:generate-key-store" too
+                                value: "",
+                                defaultValue: "password"
+                            },
+                            keyStoreType:{
+                                value: "",
+                                defaultValue: "jks"
+                            },
+                            description:{
+                                value: "",
+                                defaultValue: "Sample JavaFX Application."
+                            },
+                            title:{
+                                value: "",
+                                defaultValue: "Sample JavaFX Application"
+                            },
+                            j2seVersion:{
+                                value: "",
+                                defaultValue: "1.7+"
+                            },
+                            
+                            // ----------------------- jfx:generate-key-store
+                            overwriteKeyStore:{
+                                value: false,
+                                defaultValue: false
+                            },
+                            certDomain:{
+                                value: "",
+                                defaultValue: ""
+                            },
+                            certOrgUnit:{
+                                value: "",
+                                defaultValue: ""
+                            },
+                            certOrg:{
+                                value: "",
+                                defaultValue: ""
+                            },
+                            certState:{
+                                value: "",
+                                defaultValue: ""
+                            },
+                            certCountry:{
+                                value: "",
+                                defaultValue: ""
                             }
                         };
                     }
@@ -108,14 +232,6 @@
                 if(isOS("Mac")) this.set("configuration.selectedOS", "macosx");
                 if(isOS("Win")) this.set("configuration.selectedOS", "windows");
             }
-            /*
-            , observers:[
-                "somethingChanged(mavenProperties.*)"
-            ]
-            , somethingChanged: function(event){
-                this.set(event.path, event.value);
-            }
-            */
         });
     </script>
 </dom-module>

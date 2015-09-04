@@ -1,13 +1,22 @@
 <link rel="import" href="polymer.html">
 
 <dom-module id="boolean-value">
+    <style>
+        p{
+            margin-bottom:0;
+        }
+    </style>
     <template>
         <div>
-            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-                <input type="checkbox" id="switcher" class="mdl-switch__input" checked?="{{value}}" />
-                <span class="mdl-switch__label">{{label}}</span>
-            </label>
+            <div>
+                <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+                    <input type="checkbox" id="switcher" class="mdl-switch__input" checked$="{{value}}" />
+                    <span class="mdl-switch__label">{{label}}</span>
+                </label>
+            </div>
+        
             <p id="defaultValueHint">Default: <i>{{defaultvalue}}</i></p>
+            <p><b><content></content></b></p>
         </div>
     </template>
     <script>

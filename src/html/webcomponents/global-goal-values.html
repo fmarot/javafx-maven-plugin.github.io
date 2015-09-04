@@ -5,20 +5,25 @@
 
 <dom-module id="global-goal-values">
     <template>
-        <span class="shortPropertyDescription">your javafx main class</span>
-        <string-value label="mainClass" value="{{mavenproperties.mainClass.value}}" defaultValue="{{mavenproperties.mainClass.defaultValue}}"></string-value>
+        <string-value label="mainClass" value="{{mavenproperties.mainClass.value}}" defaultValue="{{mavenproperties.mainClass.defaultValue}}">
+            your javafx main class
+        </string-value>
 
-        <span class="shortPropertyDescription">do verbose logging-output</span>
-        <boolean-value label="verbose" value="{{mavenproperties.verbose.value}}" defaultValue="{{mavenproperties.verbose.defaultValue}}"></boolean-value>
+        <boolean-value label="verbose" value="{{mavenproperties.verbose.value}}" defaultValue="{{mavenproperties.verbose.defaultValue}}">
+            do verbose logging-output
+        </boolean-value>
 
-        <span class="shortPropertyDescription">Output-directory for generated javafx-application</span>
-        <string-value label="jfxAppOutputDir" value="{{mavenproperties.jfxAppOutputDir.value}}" defaultValue="{{mavenproperties.jfxAppOutputDir.defaultValue}}"></string-value>
+        <string-value label="jfxAppOutputDir" value="{{mavenproperties.jfxAppOutputDir.value}}" defaultValue="{{mavenproperties.jfxAppOutputDir.defaultValue}}">
+            Output-directory for generated javafx-application
+        </string-value>
 
-        <span class="shortPropertyDescription">Filename for generated javafx-application</span>
-        <string-value label="jfxMainAppJarName" value="{{mavenproperties.jfxMainAppJarName.value}}" defaultValue="{{mavenproperties.jfxMainAppJarName.defaultValue}}"></string-value>
+        <string-value label="jfxMainAppJarName" value="{{mavenproperties.jfxMainAppJarName.value}}" defaultValue="{{mavenproperties.jfxMainAppJarName.defaultValue}}">
+            Filename for generated javafx-application
+        </string-value>
 
-        <span class="shortPropertyDescription">Directory of build-files</span>
-        <string-value label="deployDir" value="{{mavenproperties.deployDir.value}}" defaultValue="{{mavenproperties.deployDir.defaultValue}}"></string-value>
+        <string-value label="deployDir" value="{{mavenproperties.deployDir.value}}" defaultValue="{{mavenproperties.deployDir.defaultValue}}">
+            Directory of build-files
+        </string-value>
     </template>
     <script>
         Polymer({

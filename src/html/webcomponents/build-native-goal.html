@@ -1,49 +1,121 @@
 <link rel="import" href="polymer.html">
+<link rel="import" href="global-goal-values.html">
 
-<maven-goal cli="native" lifecycle="build-native" dependsOn="build-jar">
-    <global-goal-values configuration="{{configuration}}"></global-goal-values>
-    <goal-hint os="windows" selectedOS="{{configuration.selectedOS}}">
-        <p>Building on Windows requires some tools to be installed:</p>
-        <ul>
-            <li>EXE bundler: Please install WiX</li>
-            <li>MSI bundler: Please install InnoSetup</li>
-        </ul>
-    </goal-hint>
-    <goal-hint os="macosx" selectedOS="{{configuration.selectedOS}}">
-        <p>Building on Mac OS X requires some special information.</p>
-    </goal-hint>
-    <goal-hint os="linux" selectedOS="{{configuration.selectedOS}}">
-        <p>Building on Linux requires some special information, for example a LICENSE when creating DEP-packages.</p>
-    </goal-hint>
-    <string name="identifier" os="macosx"></string>
-    <string name="vendor" default="${project.organization.name}" required></string>
-    <string name="nativeOutputDir" default="${project.build.directory}/jfx/native"></string>
-    <string name="bundleType" default="ALL" deprecated>
-        <note>
-            <p>BundleType was refactored/replaced in javafx itself, please use/upgrade to the new bundler-property</p>
-        </note>
-        <value>ALL</value>
-    </string>
-    <string name="bundler" default="ALL">
-        <value>ALL</value>
-        <value os="windows">exe</value>
-        <value os="windows">msi</value>
-        <value os="windows">windows.app</value>
+<link rel="import" href="string-value.html">
+<link rel="import" href="string-map.html">
+<link rel="import" href="boolean-value.html">
 
-        <value os="linux">dep</value>
-        <value os="linux">rpm</value>
+<link rel="import" href="os-specific.html">
 
-        <value os="macosx">dmg</value>
-        <value os="macosx">pkg</value>
-        <value os="macosx">mac.appStore</value>
-    </string>
-    <string-list name="jvmArgs"></string-list>
-    <string-map name="jvmProperties"></string-map>
-    <string-map name="userJvmArgs"></string-map>
-    <string name="nativeReleaseVersion" default="1.0"></string>
-    <boolean name="needShortcut" default="false"></boolean>
-    <boolean name="needMenu" default="false"></boolean>
-    <string-map name="bundleArguments"></string-map>
-    <string name="appName" default="${project.build.finalName}"></string>
-    <string name="additionalAppResources"></string>
-</maven-goal>
+<link rel="import" href="goal-hint.html">
+
+<dom-module id="build-native-goal">
+    <template>
+        <div hidden$="{{!visible}}">
+            <global-goal-values mavenProperties="{{mavenproperties}}"></global-goal-values>
+            
+            <goal-hint os="windows" selectedOS="{{configuration.selectedOS}}">
+                <p>Building on Windows requires some tools to be installed:</p>
+                <ul>
+                    <li>EXE bundler: Please install WiX</li>
+                    <li>MSI bundler: Please install InnoSetup</li>
+                </ul>
+            </goal-hint>
+            <goal-hint os="macosx" selectedOS="{{configuration.selectedOS}}">
+                <p>Building on Mac OS X requires some special information.</p>
+            </goal-hint>
+            <goal-hint os="linux" selectedOS="{{configuration.selectedOS}}">
+                <p>Building on Linux requires some special information, for example a LICENSE when creating DEP-packages.</p>
+            </goal-hint>
+
+            <os-specific os="macosx" selectedOS="{{configuration.selectedOS}}">
+                <string-value label="identifier" value="{{mavenproperties.identifier.value}}" defaultValue="{{mavenproperties.identifier.defaultValue}}">
+                    identifier
+                </string-value>
+            </os-specific>
+
+            <!-- TODO make required -->
+            <string-value label="vendor" value="{{mavenproperties.vendor.value}}" defaultValue="{{mavenproperties.vendor.defaultValue}}">
+                vendor
+            </string-value>
+
+            <string-value label="nativeOutputDir" value="{{mavenproperties.nativeOutputDir.value}}" defaultValue="{{mavenproperties.nativeOutputDir.defaultValue}}">
+                nativeOutputDir
+            </string-value>
+            
+            <!-- TODO make deprecated -->
+            <string-value label="bundleType" value="{{mavenproperties.bundleType.value}}" defaultValue="{{mavenproperties.bundleType.defaultValue}}">
+                <p>BundleType was refactored/replaced in javafx itself, please use/upgrade to the new bundler-property</p>
+            </string-value>
+
+            <!-- TODO make string-list -->
+            <string-list name="jvmArgs"></string-list>
+            
+            <string-map label="jvmProperties" value="{{mavenproperties.jvmProperties.value}}"></string-map>
+            <string-map label="userJvmArgs" value="{{mavenproperties.userJvmArgs.value}}"></string-map>
+            
+            <string-value label="nativeReleaseVersion" value="{{mavenproperties.nativeReleaseVersion.value}}" defaultValue="{{mavenproperties.nativeReleaseVersion.defaultValue}}">
+                <p>This will be used inside installer.</p>
+            </string-value>
+
+            <boolean-value label="needShortcut" value="{{mavenproperties.needShortcut.value}}" defaultValue="{{mavenproperties.needShortcut.defaultValue}}">
+                <p>Do you want a shortcut installed?</p>
+            </boolean-value>
+
+            <boolean-value label="needMenu" value="{{mavenproperties.needMenu.value}}" defaultValue="{{mavenproperties.needMenu.defaultValue}}">
+                <p>Do you want a menu-entry installed?</p>
+            </boolean-value>
+
+            <string-map label="bundleArguments" value="{{mavenproperties.bundleArguments.value}}"></string-map>
+            
+            
+            <string-value label="appName" value="{{mavenproperties.appName.value}}" defaultValue="{{mavenproperties.appName.defaultValue}}">
+                <p>The name of your application.</p>
+            </string-value>
+            <string-value label="additionalAppResources" value="{{mavenproperties.additionalAppResources.value}}" defaultValue="{{mavenproperties.additionalAppResources.defaultValue}}">
+                <p>Additional files that should be made available.</p>
+            </string-value>
+        </div>
+    </template>
+    <script>
+        Polymer({
+            is: "build-native-goal",
+            properties:{
+                configuration:{
+                    type:Object,
+                    observer: "checkVisibility"
+                },
+                mavenProperties:{
+                    type:Object,
+                    notify: true
+                },
+                cli: String,
+                lifecycle: String,
+                
+                visible: {
+                    type: Boolean,
+                    value: function(){
+                        return false;
+                    }
+                }
+            },
+            observers: [
+                "checkVisibility(configuration.*)"
+            ],
+            checkVisibility: function(event){
+                var foundVisibilityFlag = false;
+                if(this.configuration.selectedBuildMechanism === "cli"){
+                    this.set("visible", this.cli === this.configuration.selectedGoal);
+                    foundVisibilityFlag = true;
+                }
+                if(this.configuration.selectedBuildMechanism === "lifecycle"){
+                    this.set("visible", this.lifecycle === this.configuration.selectedLifecycle);
+                    foundVisibilityFlag = true;
+                }
+                if(!foundVisibilityFlag){
+                    this.set("visible", false);
+                }
+            }
+        });
+    </script>
+</dom-module>

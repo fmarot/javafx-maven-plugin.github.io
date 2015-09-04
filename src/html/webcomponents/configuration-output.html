@@ -18,6 +18,7 @@
 &lt;/plugin&gt;
         </div>
         <pre class="language-markup" id="output"><code></code></pre>
+        <p>You should run this on you command-line: <code id="callCommand"></code></p>
     </template>
 
     <script>
@@ -26,7 +27,8 @@
             properties:{
                 configuration: Object,
                 version: String,
-                mavenProperties: Object
+                mavenProperties: Object,
+                command: String
             },
             attached: function(){
                 this.refreshCode();
@@ -55,6 +57,13 @@
                     ];
                     // check CLI/lifecycle-style
                     if(self.configuration.selectedBuildMechanism !== "cli"){
+                        var jarExecutionRows = [
+                            self.getStringValueTag("id", "create-jfxjar")
+                            self.getStringValueTag("phase", "package")
+                            self.getStringValueTag("goals", "\n" + 
+                                addIndentation( self.getStringValueTag("goal", "build-jar") )
+                            + "\n")
+                        ];
                     /*
                         <executions>
                             <!-- required before build-native -->
@@ -75,11 +84,11 @@
                         </executions>
                     */
                     }
-                    return rows.join("\n\t");
+                    return rows.join("\n");
                 }
                 function getFullPluginConfigurationCode(){
                     var configurationCode = wrapperWithinPluginCode("");
-                    return self.getStringValueTag("plugin", "\n\t" + configurationCode + "\n");
+                    return self.getStringValueTag("plugin", "\n" + addIndentation( configurationCode) + "\n");
                 }
                 function addIndentation(content){
                     var rowResult = content.split("\n").join("\n\t");
@@ -87,6 +96,18 @@
                 }
                 Polymer.dom(this.$.output).innerHTML = getFullPluginConfigurationCode();
                 Prism.highlightElement(this.$.output);
+                
+                var command = "mvn ";
+                if(this.configuration.selectedBuildMechanism === "cli"){
+                    command += "jfx:" + this.configuration.selectedGoal;
+                }
+
+                if(this.configuration.selectedBuildMechanism === "lifecycle"){
+                    command += "package";
+                }
+
+                this.$.callCommand.innerHTML = command;
+                Prism.highlightElement(this.$.callCommand);
             },
             getStringValueTag: function(tagName, value){
                 return "&lt;" + tagName + "&gt;" + value + "&lt;" + "/" + tagName + "&gt;";

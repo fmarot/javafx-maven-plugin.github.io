@@ -1,13 +1,22 @@
 <link rel="import" href="polymer.html">
 
 <dom-module id="string-value">
+    <style>
+        p{
+            margin-bottom:0;
+        }
+    </style>
     <template>
         <div>
-            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                <input class="mdl-textfield__input" type="text" id="floatingTextInput" value="{{value::input}}" />
-                <label class="mdl-textfield__label" for="floatingTextInput">{{label}}</label>
+            <div>
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input class="mdl-textfield__input" type="text" id="floatingTextInput" value="{{value::input}}" />
+                    <label class="mdl-textfield__label" for="floatingTextInput">{{label}}</label>
+                </div>
             </div>
+            
             <p id="defaultValueHint">Default: <i>{{defaultvalue}}</i></p>
+            <p><b><content></content></b></p>
         </div>
     </template>
     <script>
