@@ -57,170 +57,177 @@
                 mavenProperties:{
                     type:Object,
                     value: function() {
-                        return {
-                            mainClass: {
-                                value: "",
-                                defaultValue: ""
-                            },
-                            verbose: {
-                                value: false,
-                                defaultValue: false
-                            },
-                            jfxAppOutputDir: {
-                                value: "",
-                                defaultValue: "${project.build.directory}/jfx/app"
-                            },
-                            jfxMainAppJarName: {
-                                value: "",
-                                defaultValue: "${project.build.finalName}-jfx.jar"
-                            },
-                            deployDir: {
-                                value: "",
-                                defaultValue: "${project.basedir}/src/main/deploy"
-                            },
-                            
-                            // ----------------------- jfx:jar
-                            css2bin:{
-                                value: false,
-                                defaultValue: false
-                            },
-                            preLoader:{ // "jfx:web" too
-                                value: "",
-                                defaultValue: ""
-                            },
-                            updateExistingJar:{
-                                value: false,
-                                defaultValue: false
-                            },
-                            allPermissions:{ // "jfx:web" too
-                                value: false,
-                                defaultValue: false
-                            },
-                            addPackagerJar:{
-                                value: true,
-                                defaultValue: true
-                            },
-                            
-                            // ----------------------- jfx:native
-                            identifier:{
-                                value: "",
-                                defaultValue: ""
-                            },
-                            vendor:{ // "jfx:web" too
-                                value: "",
-                                defaultValue: "${project.organization.name}"
-                            },
-                            nativeOutputDir:{
-                                value: "",
-                                defaultValue: "${project.build.directory}/jfx/native"
-                            },
-                            bundleType:{
-                                value: "",
-                                defaultValue: "ALL"
-                            },
-                            bundler:{
-                                value: "",
-                                defaultValue: "ALL"
-                            },
-                            nativeReleaseVersion:{
-                                value: "",
-                                defaultValue: "1.0"
-                            },
-                            needShortcut:{ // "jfx:web" too
-                                value: false,
-                                defaultValue: false
-                            },
-                            needMenu:{ // "jfx:web" too
-                                value: false,
-                                defaultValue: false
-                            },
-                            appName:{
-                                value: "",
-                                defaultValue: "${project.build.finalName}"
-                            },
-                            
-                            // ----------------------- jfx:web
-                            webOutputDir:{
-                                value: "",
-                                defaultValue: "${project.build.directory}/jfx/web"
-                            },
-                            width:{
-                                value: "",
-                                defaultValue: "800"
-                            },
-                            height:{
-                                value: "",
-                                defaultValue: "600"
-                            },
-                            embeddedWidth:{
-                                value: "",
-                                defaultValue: "800"
-                            },
-                            embeddedHeight:{
-                                value: "",
-                                defaultValue: "600"
-                            },
-                            keyStore:{ // "jfx:generate-key-store" too
-                                value: "",
-                                defaultValue: "src/main/deploy/keystore.jks"
-                            },
-                            keyStoreAlias:{ // "jfx:generate-key-store" too
-                                value: "",
-                                defaultValue: "myalias"
-                            },
-                            keyStorePassword:{ // "jfx:generate-key-store" too
-                                value: "",
-                                defaultValue: "password"
-                            },
-                            keyPassword:{ // "jfx:generate-key-store" too
-                                value: "",
-                                defaultValue: "password"
-                            },
-                            keyStoreType:{
-                                value: "",
-                                defaultValue: "jks"
-                            },
-                            description:{
-                                value: "",
-                                defaultValue: "Sample JavaFX Application."
-                            },
-                            title:{
-                                value: "",
-                                defaultValue: "Sample JavaFX Application"
-                            },
-                            j2seVersion:{
-                                value: "",
-                                defaultValue: "1.7+"
-                            },
-                            
-                            // ----------------------- jfx:generate-key-store
-                            overwriteKeyStore:{
-                                value: false,
-                                defaultValue: false
-                            },
-                            certDomain:{
-                                value: "",
-                                defaultValue: ""
-                            },
-                            certOrgUnit:{
-                                value: "",
-                                defaultValue: ""
-                            },
-                            certOrg:{
-                                value: "",
-                                defaultValue: ""
-                            },
-                            certState:{
-                                value: "",
-                                defaultValue: ""
-                            },
-                            certCountry:{
-                                value: "",
-                                defaultValue: ""
-                            }
-                        };
+                        return this.getDefaultConfiguration();
                     }
                 }
+            },
+            getDefaultConfiguration: function(){
+                return {
+                    mainClass: {
+                        value: "",
+                        defaultValue: ""
+                    },
+                    verbose: {
+                        value: false,
+                        defaultValue: false
+                    },
+                    jfxAppOutputDir: {
+                        value: "",
+                        defaultValue: "${project.build.directory}/jfx/app"
+                    },
+                    jfxMainAppJarName: {
+                        value: "",
+                        defaultValue: "${project.build.finalName}-jfx.jar"
+                    },
+                    deployDir: {
+                        value: "",
+                        defaultValue: "${project.basedir}/src/main/deploy"
+                    },
+                    
+                    // ----------------------- jfx:jar
+                    css2bin:{
+                        value: false,
+                        defaultValue: false
+                    },
+                    preLoader:{ // "jfx:web" too
+                        value: "",
+                        defaultValue: ""
+                    },
+                    updateExistingJar:{
+                        value: false,
+                        defaultValue: false
+                    },
+                    allPermissions:{ // "jfx:web" too
+                        value: false,
+                        defaultValue: false
+                    },
+                    addPackagerJar:{
+                        value: true,
+                        defaultValue: true
+                    },
+                    
+                    // ----------------------- jfx:native
+                    identifier:{
+                        value: "",
+                        defaultValue: ""
+                    },
+                    vendor:{ // "jfx:web" too
+                        value: "",
+                        defaultValue: "${project.organization.name}"
+                    },
+                    nativeOutputDir:{
+                        value: "",
+                        defaultValue: "${project.build.directory}/jfx/native"
+                    },
+                    bundleType:{
+                        value: "",
+                        defaultValue: "ALL"
+                    },
+                    bundler:{
+                        value: "",
+                        defaultValue: "ALL"
+                    },
+                    nativeReleaseVersion:{
+                        value: "",
+                        defaultValue: "1.0"
+                    },
+                    needShortcut:{ // "jfx:web" too
+                        value: false,
+                        defaultValue: false
+                    },
+                    needMenu:{ // "jfx:web" too
+                        value: false,
+                        defaultValue: false
+                    },
+                    appName:{
+                        value: "",
+                        defaultValue: "${project.build.finalName}"
+                    },
+                    additionalAppResources:{
+                        value: "",
+                        defaultValue: ""
+                    },
+                    
+                    // ----------------------- jfx:web
+                    webOutputDir:{
+                        value: "",
+                        defaultValue: "${project.build.directory}/jfx/web"
+                    },
+                    width:{
+                        value: "",
+                        defaultValue: "800"
+                    },
+                    height:{
+                        value: "",
+                        defaultValue: "600"
+                    },
+                    embeddedWidth:{
+                        value: "",
+                        defaultValue: "800"
+                    },
+                    embeddedHeight:{
+                        value: "",
+                        defaultValue: "600"
+                    },
+                    keyStore:{ // "jfx:generate-key-store" too
+                        value: "",
+                        defaultValue: "src/main/deploy/keystore.jks"
+                    },
+                    keyStoreAlias:{ // "jfx:generate-key-store" too
+                        value: "",
+                        defaultValue: "myalias"
+                    },
+                    keyStorePassword:{ // "jfx:generate-key-store" too
+                        value: "",
+                        defaultValue: "password"
+                    },
+                    keyPassword:{ // "jfx:generate-key-store" too
+                        value: "",
+                        defaultValue: "password"
+                    },
+                    keyStoreType:{
+                        value: "",
+                        defaultValue: "jks"
+                    },
+                    description:{
+                        value: "",
+                        defaultValue: "Sample JavaFX Application."
+                    },
+                    title:{
+                        value: "",
+                        defaultValue: "Sample JavaFX Application"
+                    },
+                    j2seVersion:{
+                        value: "",
+                        defaultValue: "1.7+"
+                    },
+                    
+                    // ----------------------- jfx:generate-key-store
+                    overwriteKeyStore:{
+                        value: false,
+                        defaultValue: false
+                    },
+                    certDomain:{
+                        value: "",
+                        defaultValue: ""
+                    },
+                    certOrgUnit:{
+                        value: "",
+                        defaultValue: ""
+                    },
+                    certOrg:{
+                        value: "",
+                        defaultValue: ""
+                    },
+                    certState:{
+                        value: "",
+                        defaultValue: ""
+                    },
+                    certCountry:{
+                        value: "",
+                        defaultValue: ""
+                    }
+                };
             },
             ready: function() {
                 function isOS(osLabel){

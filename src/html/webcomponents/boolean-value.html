@@ -26,7 +26,8 @@
                 label: String,
                 value: {
                     type: Boolean,
-                    notify: true
+                    notify: true,
+                    observer: "valueWasModified"
                 },
                 defaultValue:{
                     type: Boolean,
@@ -41,6 +42,17 @@
             },
             valueChangedListener: function(){
                 this.set("value", this.$.switcher.checked); // inform outer space ;)
+            },
+            valueWasModified: function(newValue){
+                // first have thought, that I was wrong, but in the end, this wasn't really supported within MDL itself :(
+                // http://stackoverflow.com/a/31419856/1961102
+                if(typeof this.$.switcher.parentElement.MaterialSwitch !== "undefined"){
+                    if(newValue){
+                        this.$.switcher.parentElement.MaterialSwitch.on();
+                    } else {
+                        this.$.switcher.parentElement.MaterialSwitch.off();
+                    }
+                }
             }
         });
     </script>

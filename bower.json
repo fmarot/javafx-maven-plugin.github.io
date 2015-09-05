@@ -11,7 +11,7 @@
   "dependencies": {},
   "private": true,
   "devDependencies": {
-    "material-design-lite": "~1.0.2",
+    "material-design-lite": "~1.0.4",
     "polymer": "~1.1.0",
     "prism": "prismjs/prism#~1.0.1"
   }

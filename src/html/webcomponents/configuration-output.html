@@ -19,10 +19,6 @@
             },
             attached: function(){
                 this.refreshCode();
-            },
-            hasDefaultValue: function(someEntry){
-                console.log("hasDefaultValue", someEntry);
-                return someEntry.defaultValue === someEntry.value;
             }
             , observers:[
                 // information about polymer:
@@ -36,13 +32,30 @@
             },
             refreshCode: function(){
                 var self = this;
+
+                // there is a timeframe, where this isn't existing :) (because this will be called, if "configuration" is being set in place, but mavenproperties isn't yet
+                if(typeof self.mavenproperties === "undefined"){
+                    return "";
+                }
+                function hasDefaultValue(someEntry){
+                    return someEntry.defaultValue === someEntry.value;
+                }
+                function hasDefaultOrEmptyValue(someEntry){
+                    return someEntry.defaultValue === someEntry.value || someEntry.value === "";
+                }
+
                 function getStringValueTag(tagName, value){
                     return "&lt;" + tagName + "&gt;" + value + "&lt;" + "/" + tagName + "&gt;";
                 }
                 function getBooleanValueTag(tagName, value){
                     return getStringValueTag(tagName, (!!value)?"true":"false");
                 }
-                function wrapperWithinPluginCode(configurationString){
+
+                function addIndentation(content){
+                    var rowResult = content.split("\n").join("\n\t");
+                    return "\t" + rowResult;
+                }
+                function getPluginInnerCode(configurationString){
                     var rows = [
                         getStringValueTag("groupId", "com.zenjava")
                         , getStringValueTag("artifactId", "javafx-maven-plugin")
@@ -95,19 +108,117 @@
                             }
                             
                             rows[rows.length] = getStringValueTag("executions", "\n" + 
-                                        addIndentation( executionRows.join("\n" ) )
-                                    + "\n");
+                                    addIndentation( executionRows.join("\n" ) )
+                                + "\n");
                         }
                     }
                     return rows.join("\n");
                 }
-                function getFullPluginConfigurationCode(){
-                    var configurationCode = wrapperWithinPluginCode("TODO");
-                    return getStringValueTag("plugin", "\n" + addIndentation( configurationCode) + "\n");
+                function getConfigurationCode(){
+                    var configurationRows = [];
+
+                    // always needed
+                    if( self.configuration.selectedGoal === "jar" || self.configuration.selectedGoal === "native" || self.configuration.selectedGoal === "web" ){
+                        // "global"-goal-values
+                        configurationRows[configurationRows.length] = getStringValueTag("mainClass", self.mavenproperties.mainClass.value);
+                        
+                        if(!hasDefaultValue(self.mavenproperties.verbose))
+                            configurationRows[configurationRows.length] = getBooleanValueTag("verbose", self.mavenproperties.verbose.value);
+                        
+                        if(!hasDefaultOrEmptyValue(self.mavenproperties.jfxAppOutputDir))
+                            configurationRows[configurationRows.length] = getStringValueTag("jfxAppOutputDir", self.mavenproperties.jfxAppOutputDir.value);
+                        
+                        if(!hasDefaultOrEmptyValue(self.mavenproperties.jfxMainAppJarName))
+                            configurationRows[configurationRows.length] = getStringValueTag("jfxMainAppJarName", self.mavenproperties.jfxMainAppJarName.value);
+                        
+                        if(!hasDefaultOrEmptyValue(self.mavenproperties.deployDir))
+                            configurationRows[configurationRows.length] = getStringValueTag("deployDir", self.mavenproperties.deployDir.value);
+                    }
+                    if( self.configuration.selectedGoal === "jar" ){
+                        if(!hasDefaultValue(self.mavenproperties.css2bin))
+                            configurationRows[configurationRows.length] = getBooleanValueTag("css2bin", self.mavenproperties.css2bin.value);
+                        if(!hasDefaultOrEmptyValue(self.mavenproperties.preLoader))
+                            configurationRows[configurationRows.length] = getStringValueTag("preLoader", self.mavenproperties.preLoader.value);
+                        if(!hasDefaultValue(self.mavenproperties.updateExistingJar))
+                            configurationRows[configurationRows.length] = getBooleanValueTag("updateExistingJar", self.mavenproperties.updateExistingJar.value);
+                        if(!hasDefaultValue(self.mavenproperties.allPermissions))
+                            configurationRows[configurationRows.length] = getBooleanValueTag("allPermissions", self.mavenproperties.allPermissions.value);
+                        // TODO manifestAttributes
+                        if(!hasDefaultValue(self.mavenproperties.addPackagerJar))
+                            configurationRows[configurationRows.length] = getBooleanValueTag("addPackagerJar", self.mavenproperties.addPackagerJar.value);
+                    }
+                    if( self.configuration.selectedGoal === "native" ){
+                        if( self.configuration.selectedOS === "macosx" ){
+                            configurationRows[configurationRows.length] = getStringValueTag("identifier", self.mavenproperties.identifier.value);
+                        }
+                        if(!hasDefaultOrEmptyValue(self.mavenproperties.vendor))
+                            configurationRows[configurationRows.length] = getStringValueTag("vendor", self.mavenproperties.vendor.value);
+                        if(!hasDefaultOrEmptyValue(self.mavenproperties.nativeOutputDir))
+                            configurationRows[configurationRows.length] = getStringValueTag("nativeOutputDir", self.mavenproperties.nativeOutputDir.value);
+                        if(!hasDefaultOrEmptyValue(self.mavenproperties.bundleType))
+                            configurationRows[configurationRows.length] = getStringValueTag("bundleType", self.mavenproperties.bundleType.value);
+                        if(!hasDefaultOrEmptyValue(self.mavenproperties.bundler))
+                            configurationRows[configurationRows.length] = getStringValueTag("bundler", self.mavenproperties.bundler.value);
+                        // TODO jvmArgs
+                        // TODO jvmProperties
+                        // TODO userJvmArgs
+                        if(!hasDefaultOrEmptyValue(self.mavenproperties.nativeReleaseVersion))
+                            configurationRows[configurationRows.length] = getStringValueTag("nativeReleaseVersion", self.mavenproperties.nativeReleaseVersion.value);
+                        if(!hasDefaultValue(self.mavenproperties.needShortcut))
+                            configurationRows[configurationRows.length] = getBooleanValueTag("needShortcut", self.mavenproperties.needShortcut.value);
+                        if(!hasDefaultValue(self.mavenproperties.needMenu))
+                            configurationRows[configurationRows.length] = getBooleanValueTag("needMenu", self.mavenproperties.needMenu.value);
+                        // TODO bundleArguments
+                        if(!hasDefaultOrEmptyValue(self.mavenproperties.appName))
+                            configurationRows[configurationRows.length] = getStringValueTag("appName", self.mavenproperties.appName.value);
+                        if(!hasDefaultOrEmptyValue(self.mavenproperties.additionalAppResources))
+                            configurationRows[configurationRows.length] = getStringValueTag("additionalAppResources", self.mavenproperties.additionalAppResources.value);
+                    }
+                    if( self.configuration.selectedGoal === "web" ){
+                        if(!hasDefaultOrEmptyValue(self.mavenproperties.vendor))
+                            configurationRows[configurationRows.length] = getStringValueTag("vendor", self.mavenproperties.vendor.value);
+                        if(!hasDefaultOrEmptyValue(self.mavenproperties.webOutputDir))
+                            configurationRows[configurationRows.length] = getStringValueTag("webOutputDir", self.mavenproperties.webOutputDir.value);
+                        if(!hasDefaultValue(self.mavenproperties.needShortcut))
+                            configurationRows[configurationRows.length] = getBooleanValueTag("needShortcut", self.mavenproperties.needShortcut.value);
+                        if(!hasDefaultValue(self.mavenproperties.needMenu))
+                            configurationRows[configurationRows.length] = getBooleanValueTag("needMenu", self.mavenproperties.needMenu.value);
+                        if(!hasDefaultOrEmptyValue(self.mavenproperties.preLoader))
+                            configurationRows[configurationRows.length] = getStringValueTag("preLoader", self.mavenproperties.preLoader.value);
+                        if(!hasDefaultValue(self.mavenproperties.allPermissions))
+                            configurationRows[configurationRows.length] = getBooleanValueTag("allPermissions", self.mavenproperties.allPermissions.value);
+                        if(!hasDefaultOrEmptyValue(self.mavenproperties.width))
+                            configurationRows[configurationRows.length] = getStringValueTag("width", self.mavenproperties.width.value);
+                        if(!hasDefaultOrEmptyValue(self.mavenproperties.height))
+                            configurationRows[configurationRows.length] = getStringValueTag("height", self.mavenproperties.height.value);
+                        if(!hasDefaultOrEmptyValue(self.mavenproperties.embeddedWidth))
+                            configurationRows[configurationRows.length] = getStringValueTag("embeddedWidth", self.mavenproperties.embeddedWidth.value);
+                        if(!hasDefaultOrEmptyValue(self.mavenproperties.embeddedHeight))
+                            configurationRows[configurationRows.length] = getStringValueTag("embeddedHeight", self.mavenproperties.embeddedHeight.value);
+                        
+                        if(!hasDefaultOrEmptyValue(self.mavenproperties.keyStore))
+                            configurationRows[configurationRows.length] = getStringValueTag("keyStore", self.mavenproperties.keyStore.value);
+                        if(!hasDefaultOrEmptyValue(self.mavenproperties.keyStoreAlias))
+                            configurationRows[configurationRows.length] = getStringValueTag("keyStoreAlias", self.mavenproperties.keyStoreAlias.value);
+                        if(!hasDefaultOrEmptyValue(self.mavenproperties.keyStorePassword))
+                            configurationRows[configurationRows.length] = getStringValueTag("keyStorePassword", self.mavenproperties.keyStorePassword.value);
+                        if(!hasDefaultOrEmptyValue(self.mavenproperties.keyPassword))
+                            configurationRows[configurationRows.length] = getStringValueTag("keyPassword", self.mavenproperties.keyPassword.value);
+                        if(!hasDefaultOrEmptyValue(self.mavenproperties.keyStoreType))
+                            configurationRows[configurationRows.length] = getStringValueTag("keyStoreType", self.mavenproperties.keyStoreType.value);
+
+                        if(!hasDefaultOrEmptyValue(self.mavenproperties.description))
+                            configurationRows[configurationRows.length] = getStringValueTag("description", self.mavenproperties.description.value);
+                        if(!hasDefaultOrEmptyValue(self.mavenproperties.title))
+                            configurationRows[configurationRows.length] = getStringValueTag("title", self.mavenproperties.title.value);
+                        if(!hasDefaultOrEmptyValue(self.mavenproperties.j2seVersion))
+                            configurationRows[configurationRows.length] = getStringValueTag("j2seVersion", self.mavenproperties.j2seVersion.value);
+                    }
+                    return configurationRows.join("\n");
                 }
-                function addIndentation(content){
-                    var rowResult = content.split("\n").join("\n\t");
-                    return "\t" + rowResult;
+                function getFullPluginConfigurationCode(){
+                    var configurationCode = getPluginInnerCode(getConfigurationCode());
+                    return getStringValueTag("plugin", "\n" + addIndentation( configurationCode) + "\n");
                 }
                 Polymer.dom(this.$.output).innerHTML = getFullPluginConfigurationCode();
                 Prism.highlightElement(this.$.output);
