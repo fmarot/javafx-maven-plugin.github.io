@@ -64,54 +64,65 @@
                         , getStringValueTag("configuration", "\n" + addIndentation(configurationString) + "\n")
                     ];
                     // check CLI/lifecycle-style
-                    if(self.configuration.selectedBuildMechanism !== "cli"){
+                    if(self.configuration.selectedBuildMechanism === "lifecycle"){
+                        var executionRows = [];
                         var jarExecutionRows = [];
-                        if(self.configuration.selectedLifecycle === "build-jar" || self.configuration.selectedLifecycle === "build-native" || self.configuration.selectedLifecycle === "build-web"){
-                            // native
-                            if( self.configuration.selectedLifecycle === "build-native" ){
-                                jarExecutionRows[jarExecutionRows.length] = "&lt;"+ "!-- required before build-native --" +"&gt;";
-                            }
-                            // web
-                            if( self.configuration.selectedLifecycle === "build-web" ){
-                                jarExecutionRows[jarExecutionRows.length] = "&lt;"+ "!-- required before build-web --" +"&gt;";
-                            }
+                        // native
+                        if( self.configuration.selectedLifecycle === "build-native" ){
+                            jarExecutionRows[jarExecutionRows.length] = "&lt;"+ "!-- required before build-native --" +"&gt;";
+                        }
+                        // web
+                        if( self.configuration.selectedLifecycle === "build-web" ){
+                            jarExecutionRows[jarExecutionRows.length] = "&lt;"+ "!-- required before build-web --" +"&gt;";
+                        }
+                        
+                        // jar, native, web
+                        if(self.configuration.selectedLifecycle !== "build-generate-key-store"){
                             jarExecutionRows[jarExecutionRows.length] = getStringValueTag("id", "create-jfxjar");
                             jarExecutionRows[jarExecutionRows.length] = getStringValueTag("phase", "package");
                             jarExecutionRows[jarExecutionRows.length] = getStringValueTag("goals", "\n" + 
                                     addIndentation( getStringValueTag("goal", "build-jar") )
                                 + "\n");
-                            var executionRows = [];
                             var jarExecution = getStringValueTag("execution", "\n"+addIndentation( jarExecutionRows.join("\n") ) +"\n");
-                            var nativeExecution = "";
                             executionRows[executionRows.length] = jarExecution;
-
-                            // native
-                            if(self.configuration.selectedLifecycle === "build-native"){
-                                var nativeExecutionRows = [];
-                                nativeExecutionRows[nativeExecutionRows.length] = getStringValueTag("id", "create-native");
-                                nativeExecutionRows[nativeExecutionRows.length] = getStringValueTag("phase", "package");
-                                nativeExecutionRows[nativeExecutionRows.length] = getStringValueTag("goals", "\n" + 
-                                        addIndentation( getStringValueTag("goal", "build-native") )
-                                    + "\n");
-                                nativeExecution = getStringValueTag("execution", "\n"+addIndentation( nativeExecutionRows.join("\n") ) +"\n");
-                                executionRows[executionRows.length] = nativeExecution;
-                            }
-                            // web
-                            if(self.configuration.selectedLifecycle === "build-web"){
-                                var webExecutionRows = [];
-                                webExecutionRows[webExecutionRows.length] = getStringValueTag("id", "create-web");
-                                webExecutionRows[webExecutionRows.length] = getStringValueTag("phase", "package");
-                                webExecutionRows[webExecutionRows.length] = getStringValueTag("goals", "\n" + 
-                                        addIndentation( getStringValueTag("goal", "build-web") )
-                                    + "\n");
-                                webExecutionRows = getStringValueTag("execution", "\n"+addIndentation( webExecutionRows.join("\n") ) +"\n");
-                                executionRows[executionRows.length] = webExecutionRows;
-                            }
-                            
-                            rows[rows.length] = getStringValueTag("executions", "\n" + 
-                                    addIndentation( executionRows.join("\n" ) )
-                                + "\n");
                         }
+                        // native
+                        if(self.configuration.selectedLifecycle === "build-native"){
+                            var nativeExecutionRows = [];
+                            nativeExecutionRows[nativeExecutionRows.length] = getStringValueTag("id", "create-native");
+                            nativeExecutionRows[nativeExecutionRows.length] = getStringValueTag("phase", "package");
+                            nativeExecutionRows[nativeExecutionRows.length] = getStringValueTag("goals", "\n" + 
+                                    addIndentation( getStringValueTag("goal", "build-native") )
+                                + "\n");
+                            nativeExecution = getStringValueTag("execution", "\n"+addIndentation( nativeExecutionRows.join("\n") ) +"\n");
+                            executionRows[executionRows.length] = nativeExecution;
+                        }
+                        // web
+                        if(self.configuration.selectedLifecycle === "build-web"){
+                            var webExecutionRows = [];
+                            webExecutionRows[webExecutionRows.length] = getStringValueTag("id", "create-web");
+                            webExecutionRows[webExecutionRows.length] = getStringValueTag("phase", "package");
+                            webExecutionRows[webExecutionRows.length] = getStringValueTag("goals", "\n" + 
+                                    addIndentation( getStringValueTag("goal", "build-web") )
+                                + "\n");
+                            webExecutionRows = getStringValueTag("execution", "\n"+addIndentation( webExecutionRows.join("\n") ) +"\n");
+                            executionRows[executionRows.length] = webExecutionRows;
+                        }
+                        // generate-key-store
+                        if(self.configuration.selectedLifecycle === "build-generate-key-store"){
+                            var keystoreExecutionRows = [];
+                            keystoreExecutionRows[keystoreExecutionRows.length] = getStringValueTag("id", "create-keystore");
+                            keystoreExecutionRows[keystoreExecutionRows.length] = getStringValueTag("phase", "package");
+                            keystoreExecutionRows[keystoreExecutionRows.length] = getStringValueTag("goals", "\n" + 
+                                    addIndentation( getStringValueTag("goal", "build-generate-key-store") )
+                                + "\n");
+                            keystoreExecutionRows = getStringValueTag("execution", "\n"+addIndentation( keystoreExecutionRows.join("\n") ) +"\n");
+                            executionRows[executionRows.length] = keystoreExecutionRows;
+                        }
+                        
+                        rows[rows.length] = getStringValueTag("executions", "\n" + 
+                                addIndentation( executionRows.join("\n" ) )
+                            + "\n");
                     }
                     return rows.join("\n");
                 }
