@@ -1,0 +1,244 @@
+<link rel="import" href="polymer.html">
+
+<link rel="import" href="os-selection.html">
+<link rel="import" href="build-mechanism-selection.html">
+<link rel="import" href="goal-selection.html">
+
+<link rel="import" href="build-jar-goal.html">
+<link rel="import" href="build-native-goal.html">
+<link rel="import" href="build-web-goal.html">
+<link rel="import" href="build-keystore-goal.html">
+
+<link rel="import" href="configuration-output.html">
+
+<dom-module id="jfx-configurator">
+    <template>
+        <div class="mdl-grid">
+            <div class="mdl-cell mdl-cell--6-col">
+                <div class$="{{configuration.selectedOS}}">
+                    <os-selection configuration="{{configuration}}">
+                        Please select the operating system of your build-environment:
+                    </os-selection>
+                    <goal-selection configuration="{{configuration}}">
+                        What do you want to create?
+                    </goal-selection>
+                    <build-mechanism-selection configuration="{{configuration}}">
+                        How do you want to call this plugin/create your result?
+                    </build-mechanism-selection>
+
+                    <build-jar-goal configuration="{{configuration}}" mavenProperties="{{mavenProperties}}" cli="jar" lifecycle="build-jar"></build-jar-goal>
+                    <build-native-goal configuration="{{configuration}}" mavenProperties="{{mavenProperties}}" cli="native" lifecycle="build-native"></build-native-goal>
+
+                    <build-web-goal configuration="{{configuration}}" mavenProperties="{{mavenProperties}}" cli="web" lifecycle="build-web"></build-web-goal>
+                    <build-keystore-goal configuration="{{configuration}}" mavenProperties="{{mavenProperties}}" cli="generate-key-store" lifecycle="build-keystore"></build-keystore-goal>
+                </div>
+            </div>
+            <div class="mdl-cell mdl-cell--6-col">
+                <configuration-output configuration="{{configuration}}" mavenProperties="{{mavenProperties}}" version="{{version}}"></configuration-output>
+            </div>
+        </div>
+    </template>
+    <script>
+        Polymer({
+            is: "jfx-configurator",
+            properties:{
+                version: String,
+                configuration:{
+                    type:Object,
+                    value: function() {
+                        return {
+                            selectedOS: "none",
+                            selectedBuildMechanism: "cli",
+                            selectedGoal: "jar",
+                            selectedLifecycle: "build-jar"
+                        };
+                    }
+                },
+                mavenProperties:{
+                    type:Object,
+                    value: function() {
+                        return this.getDefaultConfiguration();
+                    }
+                }
+            },
+            getDefaultConfiguration: function(){
+                return {
+                    mainClass: {
+                        value: "",
+                        defaultValue: ""
+                    },
+                    verbose: {
+                        value: false,
+                        defaultValue: false
+                    },
+                    jfxAppOutputDir: {
+                        value: "",
+                        defaultValue: "${project.build.directory}/jfx/app"
+                    },
+                    jfxMainAppJarName: {
+                        value: "",
+                        defaultValue: "${project.build.finalName}-jfx.jar"
+                    },
+                    deployDir: {
+                        value: "",
+                        defaultValue: "${project.basedir}/src/main/deploy"
+                    },
+                    
+                    // ----------------------- jfx:jar
+                    css2bin:{
+                        value: false,
+                        defaultValue: false
+                    },
+                    preLoader:{ // "jfx:web" too
+                        value: "",
+                        defaultValue: ""
+                    },
+                    updateExistingJar:{
+                        value: false,
+                        defaultValue: false
+                    },
+                    allPermissions:{ // "jfx:web" too
+                        value: false,
+                        defaultValue: false
+                    },
+                    addPackagerJar:{
+                        value: true,
+                        defaultValue: true
+                    },
+                    
+                    // ----------------------- jfx:native
+                    identifier:{
+                        value: "",
+                        defaultValue: ""
+                    },
+                    vendor:{ // "jfx:web" too
+                        value: "",
+                        defaultValue: "${project.organization.name}"
+                    },
+                    nativeOutputDir:{
+                        value: "",
+                        defaultValue: "${project.build.directory}/jfx/native"
+                    },
+                    bundleType:{
+                        value: "",
+                        defaultValue: "ALL"
+                    },
+                    bundler:{
+                        value: "",
+                        defaultValue: "ALL"
+                    },
+                    nativeReleaseVersion:{
+                        value: "",
+                        defaultValue: "1.0"
+                    },
+                    needShortcut:{ // "jfx:web" too
+                        value: false,
+                        defaultValue: false
+                    },
+                    needMenu:{ // "jfx:web" too
+                        value: false,
+                        defaultValue: false
+                    },
+                    appName:{
+                        value: "",
+                        defaultValue: "${project.build.finalName}"
+                    },
+                    additionalAppResources:{
+                        value: "",
+                        defaultValue: ""
+                    },
+                    
+                    // ----------------------- jfx:web
+                    webOutputDir:{
+                        value: "",
+                        defaultValue: "${project.build.directory}/jfx/web"
+                    },
+                    width:{
+                        value: "",
+                        defaultValue: "800"
+                    },
+                    height:{
+                        value: "",
+                        defaultValue: "600"
+                    },
+                    embeddedWidth:{
+                        value: "",
+                        defaultValue: "800"
+                    },
+                    embeddedHeight:{
+                        value: "",
+                        defaultValue: "600"
+                    },
+                    keyStore:{ // "jfx:generate-key-store" too
+                        value: "",
+                        defaultValue: "src/main/deploy/keystore.jks"
+                    },
+                    keyStoreAlias:{ // "jfx:generate-key-store" too
+                        value: "",
+                        defaultValue: "myalias"
+                    },
+                    keyStorePassword:{ // "jfx:generate-key-store" too
+                        value: "",
+                        defaultValue: "password"
+                    },
+                    keyPassword:{ // "jfx:generate-key-store" too
+                        value: "",
+                        defaultValue: "password"
+                    },
+                    keyStoreType:{
+                        value: "",
+                        defaultValue: "jks"
+                    },
+                    description:{
+                        value: "",
+                        defaultValue: "Sample JavaFX Application."
+                    },
+                    title:{
+                        value: "",
+                        defaultValue: "Sample JavaFX Application"
+                    },
+                    j2seVersion:{
+                        value: "",
+                        defaultValue: "1.7+"
+                    },
+                    
+                    // ----------------------- jfx:generate-key-store
+                    overwriteKeyStore:{
+                        value: false,
+                        defaultValue: false
+                    },
+                    certDomain:{
+                        value: "",
+                        defaultValue: ""
+                    },
+                    certOrgUnit:{
+                        value: "",
+                        defaultValue: ""
+                    },
+                    certOrg:{
+                        value: "",
+                        defaultValue: ""
+                    },
+                    certState:{
+                        value: "",
+                        defaultValue: ""
+                    },
+                    certCountry:{
+                        value: "",
+                        defaultValue: ""
+                    }
+                };
+            },
+            ready: function() {
+                function isOS(osLabel){
+                    return navigator.appVersion.indexOf(osLabel) !== -1;
+                }
+                
+                // conditionally set selected OS
+                if(isOS("Linux")) this.set("configuration.selectedOS", "linux");
+                if(isOS("Mac")) this.set("configuration.selectedOS", "macosx");
+                if(isOS("Win")) this.set("configuration.selectedOS", "windows");
+            }
+        });
+    </script>
+</dom-module>

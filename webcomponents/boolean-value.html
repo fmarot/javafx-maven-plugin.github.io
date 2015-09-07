@@ -1,0 +1,59 @@
+<link rel="import" href="polymer.html">
+
+<dom-module id="boolean-value">
+    <style>
+        p{
+            margin-bottom:0;
+        }
+    </style>
+    <template>
+        <div>
+            <div>
+                <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+                    <input type="checkbox" id="switcher" class="mdl-switch__input" checked$="{{value}}" />
+                    <span class="mdl-switch__label">{{label}}</span>
+                </label>
+            </div>
+        
+            <p id="defaultValueHint">Default: <i>{{defaultvalue}}</i></p>
+            <p><b><content></content></b></p>
+        </div>
+    </template>
+    <script>
+        Polymer({
+            is: "boolean-value",
+            properties:{
+                label: String,
+                value: {
+                    type: Boolean,
+                    notify: true,
+                    observer: "valueWasModified"
+                },
+                defaultValue:{
+                    type: Boolean,
+                    readOnly: true,
+                    value: function(){
+                        return "";
+                    }
+                }
+            },
+            listeners:{
+                "change":"valueChangedListener"
+            },
+            valueChangedListener: function(){
+                this.set("value", this.$.switcher.checked); // inform outer space ;)
+            },
+            valueWasModified: function(newValue){
+                // first have thought, that I was wrong, but in the end, this wasn't really supported within MDL itself :(
+                // http://stackoverflow.com/a/31419856/1961102
+                if(typeof this.$.switcher.parentElement.MaterialSwitch !== "undefined"){
+                    if(newValue){
+                        this.$.switcher.parentElement.MaterialSwitch.on();
+                    } else {
+                        this.$.switcher.parentElement.MaterialSwitch.off();
+                    }
+                }
+            }
+        });
+    </script>
+</dom-module>

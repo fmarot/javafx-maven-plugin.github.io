@@ -1,0 +1,41 @@
+<!doctype html>
+<html land="en" ng-app="JavaFXConfigurator">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>JavaFX-Maven-Plugin - configuration-generator</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <link rel="stylesheet" href="css/styles.css">
+        <link rel="stylesheet" href="css/prism.css">
+        <link rel="stylesheet" href="css/material.min.css">
+        <link rel="stylesheet" href="css/material.indigo-blue.min.css" />
+
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+        <script type="text/javascript" src="js/webcomponents-lite.min.js"></script>
+        
+        <link rel="import" href="webcomponents/github-star.html">
+        <link rel="import" href="webcomponents/jfx-configurator.html">
+    </head>
+    <body>
+        <header class="top">
+            <span class="claim">JavaFX-Maven-Plugin</span>
+            <span class="button reset"><i class="material-icons">refresh</i></span>
+        </header>
+        <h1>Create your plugin-configuration with ease</h1>
+        
+        
+        <github-star></github-star>
+        <jfx-configurator version="8.1.3"></jfx-configurator>
+
+        <!-- MDL -->
+        <script src="js/material.min.js"></script>
+        <script>
+            document.addEventListener('WebComponentsReady', function() {
+                // MDL
+                componentHandler.upgradeDom();
+            });
+        </script>
+    </body>
+</html>

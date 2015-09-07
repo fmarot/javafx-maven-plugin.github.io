@@ -1,0 +1,121 @@
+<link rel="import" href="polymer.html">
+<link rel="import" href="global-goal-values.html">
+
+<link rel="import" href="string-value.html">
+<link rel="import" href="boolean-value.html">
+
+<dom-module id="build-web-goal">
+    <template>
+        <div hidden$="{{!visible}}">
+            <global-goal-values mavenProperties="{{mavenproperties}}"></global-goal-values>
+        
+            <p>Be aware that this is not as supported as other goals, deploying javafx-apps via JNLP or Applet is error-prone!</p>
+            
+            <string-value label="vendor" value="{{mavenproperties.vendor.value}}" defaultValue="{{mavenproperties.vendor.defaultValue}}">
+                The vendor (i.e. you) to include in the deployment information.
+            </string-value>
+
+            <string-value label="webOutputDir" value="{{mavenproperties.webOutputDir.value}}" defaultValue="{{mavenproperties.webOutputDir.defaultValue}}">
+                The output directory that the web bundle is to be built into. Both the webstart and applet bundle are generated into the same output directory and share the same JNLP and JAR files.
+            </string-value>
+
+            <boolean-value label="needShortcut" value="{{mavenproperties.needShortcut.value}}" defaultValue="{{mavenproperties.needShortcut.defaultValue}}">
+                Set this to true if you would like your application to have a shortcut on the users desktop (or platform equivalent) when it is installed.
+            </boolean-value>
+
+            <boolean-value label="needMenu" value="{{mavenproperties.needMenu.value}}" defaultValue="{{mavenproperties.needMenu.defaultValue}}">
+                Set this to true if you would like your application to have a link in the main system menu (or platform equivalent) when it is installed.
+            </boolean-value>
+
+            <string-value label="preLoader" value="{{mavenproperties.preLoader.value}}" defaultValue="{{mavenproperties.preLoader.defaultValue}}">
+                A custom class that can act as a Pre-Loader for your app. The Pre-Loader is run before anything else and is useful for showing splash screens or similar 'progress' style windows. For more information on Pre-Loaders, see the official JavaFX packaging documentation.
+            </string-value>
+
+            <boolean-value label="allPermissions" value="{{mavenproperties.allPermissions.value}}" defaultValue="{{mavenproperties.allPermissions.defaultValue}}">
+                Set this to true if your app needs to break out of the standard web sandbox and do more powerful functions. <br /><br />
+                By setting this value, you are implicitly saying that your app needs to be signed. As such, this Mojo will automatically attempt to sign your JARs if this is set, and in this case the various keyStore parameters need to be set correctly and a keyStore must be present. Use the generate-key-store Mojo to generate a local keyStore for testing. <br /><br />
+                If you are using FXML you will need to set this value to true.
+            </boolean-value>
+
+            <string-value label="width" value="{{mavenproperties.width.value}}" defaultValue="{{mavenproperties.width.defaultValue}}">
+                width
+            </string-value>
+            <string-value label="height" value="{{mavenproperties.height.value}}" defaultValue="{{mavenproperties.height.defaultValue}}">
+                height
+            </string-value>
+            <string-value label="embeddedWidth" value="{{mavenproperties.embeddedWidth.value}}" defaultValue="{{mavenproperties.embeddedWidth.defaultValue}}">
+                If not set, will be the same as width-parameter.
+            </string-value>
+            <string-value label="embeddedHeight" value="{{mavenproperties.embeddedHeight.value}}" defaultValue="{{mavenproperties.embeddedHeight.defaultValue}}">
+                If not set, will be the same as height-parameter.
+            </string-value>
+            
+            <string-value label="keyStore" value="{{mavenproperties.keyStore.value}}" defaultValue="{{mavenproperties.keyStore.defaultValue}}">
+                The location of the keystore.
+            </string-value>
+            <string-value label="keyStoreAlias" value="{{mavenproperties.keyStoreAlias.value}}" defaultValue="{{mavenproperties.keyStoreAlias.defaultValue}}">
+                The alias to use when accessing the keystore.
+            </string-value>
+            <string-value label="keyStorePassword" value="{{mavenproperties.keyStorePassword.value}}" defaultValue="{{mavenproperties.keyStorePassword.defaultValue}}">
+                The password to use when accessing the keystore.
+            </string-value>
+            <string-value label="keyPassword" value="{{mavenproperties.keyPassword.value}}" defaultValue="{{mavenproperties.keyPassword.defaultValue}}">
+                The password to use when accessing the key within the keystore.
+            </string-value>
+            <string-value label="keyStoreType" value="{{mavenproperties.keyStoreType.value}}" defaultValue="{{mavenproperties.keyStoreType.defaultValue}}">
+                The type of KeyStore being used.
+            </string-value>
+            
+            <string-value label="description" value="{{mavenproperties.description.value}}" defaultValue="{{mavenproperties.description.defaultValue}}">
+                A description used within generated JNLP-file.
+            </string-value>
+            <string-value label="title" value="{{mavenproperties.title.value}}" defaultValue="{{mavenproperties.title.defaultValue}}">
+                A title used within generated JNLP-file.
+            </string-value>
+            <string-value label="j2seVersion" value="{{mavenproperties.j2seVersion.value}}" defaultValue="{{mavenproperties.j2seVersion.defaultValue}}">
+                This value refers to a platform version of the Java Platform Standard Edition.
+            </string-value>
+        </div>
+    </template>
+    <script>
+        Polymer({
+            is: "build-web-goal",
+            properties:{
+                configuration:{
+                    type:Object,
+                    observer: "checkVisibility"
+                },
+                mavenProperties:{
+                    type:Object,
+                    notify: true
+                },
+                cli: String,
+                lifecycle: String,
+                
+                visible: {
+                    type: Boolean,
+                    value: function(){
+                        return false;
+                    }
+                }
+            },
+            observers: [
+                "checkVisibility(configuration.*)"
+            ],
+            checkVisibility: function(event){
+                var foundVisibilityFlag = false;
+                if(this.configuration.selectedBuildMechanism === "cli"){
+                    this.set("visible", this.cli === this.configuration.selectedGoal);
+                    foundVisibilityFlag = true;
+                }
+                if(this.configuration.selectedBuildMechanism === "lifecycle"){
+                    this.set("visible", this.lifecycle === this.configuration.selectedLifecycle);
+                    foundVisibilityFlag = true;
+                }
+                if(!foundVisibilityFlag){
+                    this.set("visible", false);
+                }
+            }
+        });
+    </script>
+</dom-module>

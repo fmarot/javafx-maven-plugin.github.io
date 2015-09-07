@@ -1,0 +1,84 @@
+<link rel="import" href="polymer.html">
+
+<dom-module id="goal-selection-button">
+    <style>
+        .button{
+            padding-bottom:20px;
+        }
+    </style>
+    <template>
+        <div class="button">
+            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">
+                <content></content>
+            </button>
+        </div>
+    </template>
+    <script>
+        Polymer({
+            is: "goal-selection-button",
+            properties:{
+                cliValue: {
+                    type: String,
+                    value: function(){
+                        return "";
+                    }
+                },
+                lifecycleValue: {
+                    type: String,
+                    value: function(){
+                        return "";
+                    }
+                },
+                configuration:{
+                    type:Object,
+                    notify: true
+                }
+            },
+            listeners:{
+                "click":"selectNewGoal"
+            },
+            observers:[
+                "refreshOnConfigurationChanges(configuration.*)"
+            ],
+            attached: function(){
+                // call this to get initial selection
+                this.refreshState();
+            },
+            refreshOnConfigurationChanges: function(event){
+                this.refreshState();
+            },
+            refreshState:function(){
+                if(this.configuration.selectedBuildMechanism === "cli"){
+                    this.valueGotChanged(this.configuration.selectedGoal);
+                }
+                if(this.configuration.selectedBuildMechanism === "lifecycle"){
+                    this.valueGotChanged(this.configuration.selectedLifecycle);
+                }
+            },
+            selectNewGoal: function(){
+                this.set("configuration.selectedGoal", this.cliValue);
+                this.set("configuration.selectedLifecycle", this.lifecycleValue);
+            },
+            valueGotChanged: function(newValue){
+                // mark selected button
+                var cssClassToAddOnMatching = "mdl-button--colored";
+                var classesList = Polymer.dom(this.root).querySelectorAll("button")[0].classList;
+                
+                if(this.configuration.selectedBuildMechanism === "cli"){
+                    if(this.cliValue === newValue){
+                        classesList.add(cssClassToAddOnMatching);
+                    }else{
+                        classesList.remove(cssClassToAddOnMatching);
+                    }
+                }
+                if(this.configuration.selectedBuildMechanism === "lifecycle"){
+                    if(this.lifecycleValue === newValue){
+                        classesList.add(cssClassToAddOnMatching);
+                    }else{
+                        classesList.remove(cssClassToAddOnMatching);
+                    }
+                }
+            }
+        });
+    </script>
+</dom-module>

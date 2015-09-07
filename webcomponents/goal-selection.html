@@ -1,0 +1,30 @@
+<link rel="import" href="polymer.html">
+<link rel="import" href="goal-selection-button.html">
+
+<dom-module id="goal-selection">
+    <style>
+        .selection-group{
+            margin-top:20px;
+        }
+    </style>
+    <template>
+        <span class="shortPropertyDescription"><content></content></span>
+        <div class="selection-group">
+            <goal-selection-button cli-value="jar" lifecycle-value="build-jar" configuration="{{ configuration }}">JAR</goal-selection-button>
+            <goal-selection-button cli-value="native" lifecycle-value="build-native" configuration="{{ configuration }}">Native Bundle</goal-selection-button>
+            <goal-selection-button cli-value="web" lifecycle-value="build-web" configuration="{{ configuration }}">Web Bundle</goal-selection-button>
+            <goal-selection-button cli-value="generate-key-store" lifecycle-value="build-keystore" configuration="{{ configuration }}">Keystore</goal-selection-button>
+        </div>
+    </template>
+    <script>
+        Polymer({
+            is: "goal-selection",
+            properties:{
+                configuration:{
+                    type:Object,
+                    notify:true
+                }
+            }
+        });
+    </script>
+</dom-module>

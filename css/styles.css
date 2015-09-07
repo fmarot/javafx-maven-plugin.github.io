@@ -1,0 +1,89 @@
+body, html{
+    padding:0;
+    margin:0;
+}
+.windows .mdl-button--raised.mdl-button--colored{
+    background-color:#3F51B5;
+}
+.windows .mdl-button--raised.mdl-button--colored:hover{
+    background-color:#5974FF;
+}
+.linux .mdl-button--raised.mdl-button--colored{
+    background-color:#FF9800;
+}
+.linux .mdl-button--raised.mdl-button--colored:hover{
+    background-color:#FFBC5E;
+}
+.macosx .mdl-button--raised.mdl-button--colored{
+    background-color:#E91E63;
+}
+.macosx .mdl-button--raised.mdl-button--colored:hover{
+    background-color:#E86A96;
+}
+
+.top .button{
+    padding:1rem 1rem;
+    margin-right:1rem;
+    line-height:1rem;
+    font-size:1rem;
+}
+.top .button:hover, .top .button:active{
+    cursor:pointer;
+    background-color:#5D4037;
+}
+.top .button.reset{
+    position:absolute;
+    top:0;
+    right:0;
+    bottom:0;
+}
+.top .claim{
+    padding-top:0.625rem;
+    font-size:1.5rem;
+    line-height:1.75rem;
+    
+    position:absolute;
+    top:0;
+    left:1rem;
+    bottom:0;
+}
+.top{
+    background-color:#442F29;
+    color:white;
+    font-weight:bold;
+    
+    height:3rem;
+    position:relative;
+    margin:0;
+    padding:0;
+}
+
+.bottomline{
+    background-color:#4CAF50;
+    height:0.4rem;
+    position:absolute;
+    bottom:0;
+    left:0;
+    right:0;
+}
+.bottomline .button{
+    background-color:#4CAF50;
+    padding:0.7rem;
+    font-weight:bold;
+    color:white;
+}
+.bottomline .button.showme{
+    position:absolute;
+    right:0;
+    bottom: 0.4rem;
+    border-top-left-radius:0.3rem;
+    cursor:pointer;
+}
+
+.shortPropertyDescription{
+    font-weight: bold;
+}
+/* http://stackoverflow.com/questions/20816163/how-can-i-make-custom-polymer-element-hidden */
+[hidden], .hidden {
+    display: none;
+}

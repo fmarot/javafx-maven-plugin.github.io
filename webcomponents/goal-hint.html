@@ -1,0 +1,33 @@
+<link rel="import" href="polymer.html">
+
+<dom-module id="goal-hint">
+    <template>
+        <div hidden$="{{!visible}}">
+            <content></content>
+        </div>
+    </template>
+    <script>
+        Polymer({
+            is: "goal-hint",
+            properties:{
+                selectedos:{
+                    type: String,
+                    observer: "updateShowCondition"
+                },
+                os: String,
+                visible:{
+                    type:Boolean,
+                    value:true
+                }
+            },
+            updateShowCondition: function(){
+                if( !!this.os ){
+                    this.set("visible", this.os === this.selectedos);
+                } else {
+                    // hint was not fixated on OS, so show this always
+                    this.set("visible", true);
+                }
+            }
+        });
+    </script>
+</dom-module>

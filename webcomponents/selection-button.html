@@ -1,0 +1,49 @@
+<link rel="import" href="polymer.html">
+
+<dom-module id="selection-button">
+    <style>
+        .button{
+            padding-bottom:20px;
+        }
+    </style>
+    <template>
+        <div class="button">
+            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">
+                <content></content>
+            </button>
+        </div>
+    </template>
+    <script>
+        Polymer({
+            is: "selection-button",
+            properties:{
+                value: String,
+                currentvalue:{
+                    type:String,
+                    notify: true,
+                    observer: "valueGotChanged"
+                }
+            },
+            listeners:{
+                "click":"selectNewMechanism"
+            },
+            attached: function(){
+                // call this to get initial selection
+                this.valueGotChanged(this.currentvalue);
+            },
+            selectNewMechanism: function(){
+                this.set("currentvalue", this.value);
+            },
+            valueGotChanged: function(newValue){
+                // mark selected button
+                var cssClassToAddOnMatching = "mdl-button--colored";
+                var classesList = Polymer.dom(this.root).querySelectorAll("button")[0].classList;
+                if(this.value === newValue){
+                    classesList.add(cssClassToAddOnMatching);
+                }else{
+                    classesList.remove(cssClassToAddOnMatching);
+                }
+            }
+        });
+    </script>
+</dom-module>

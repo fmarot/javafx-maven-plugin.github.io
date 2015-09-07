@@ -1,0 +1,28 @@
+<link rel="import" href="polymer.html">
+<link rel="import" href="selection-button.html">
+
+<dom-module id="build-mechanism-selection">
+    <style>
+        .selection-group{
+            margin-top:20px;
+        }
+    </style>
+    <template>
+        <span class="shortPropertyDescription"><content></content></span>
+        <div class="selection-group">
+            <selection-button value="lifecycle" currentValue="{{ configuration.selectedBuildMechanism }}">via Maven-lifecycle</selection-button>
+            <selection-button value="cli" currentValue="{{ configuration.selectedBuildMechanism }}">via CLI</selection-button>
+        </div>
+    </template>
+    <script>
+        Polymer({
+            is: "build-mechanism-selection",
+            properties:{
+                configuration:{
+                    type:Object,
+                    notify:true
+                }
+            }
+        });
+    </script>
+</dom-module>

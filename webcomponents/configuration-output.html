@@ -1,0 +1,234 @@
+<link rel="import" href="polymer.html">
+
+<script type="text/javascript" src="../js/prism.js"></script>
+
+<dom-module id="configuration-output">
+    <template>
+        <pre class="language-markup" id="output"><code></code></pre>
+        <p>You should run this on you command-line: <code id="callCommand"></code></p>
+    </template>
+
+    <script>
+        Polymer({
+            is: "configuration-output",
+            properties:{
+                configuration: Object,
+                version: String,
+                mavenProperties: Object,
+                command: String
+            },
+            attached: function(){
+                this.refreshCode();
+            }
+            , observers:[
+                // information about polymer:
+                // - don't use this naming for function-names: "*Changed"
+                // - properties to be watched have to be "lower-cased"
+                "doRefreshStuffWhenSomethingChanged(mavenproperties.*)"
+                , "doRefreshStuffWhenSomethingChanged(configuration.*)"
+            ],
+            doRefreshStuffWhenSomethingChanged: function(event){
+                this.refreshCode();
+            },
+            refreshCode: function(){
+                var self = this;
+                var configurationRows = [];
+
+                // there is a timeframe, where this isn't existing :) (because this will be called, if "configuration" is being set in place, but mavenproperties isn't yet
+                if(typeof self.mavenproperties === "undefined"){
+                    return "";
+                }
+                function hasDefaultValue(someEntry){
+                    return someEntry.defaultValue === someEntry.value;
+                }
+                function hasDefaultOrEmptyValue(someEntry){
+                    return someEntry.defaultValue === someEntry.value || someEntry.value === "";
+                }
+
+                function getStringValueTag(tagName, value){
+                    return "&lt;" + tagName + "&gt;" + value + "&lt;" + "/" + tagName + "&gt;";
+                }
+                function getBooleanValueTag(tagName, value){
+                    return getStringValueTag(tagName, (!!value)?"true":"false");
+                }
+
+                function addIndentation(content){
+                    var rowResult = content.split("\n").join("\n\t");
+                    return "\t" + rowResult;
+                }
+                function getPluginInnerCode(configurationString){
+                    var rows = [
+                        getStringValueTag("groupId", "com.zenjava")
+                        , getStringValueTag("artifactId", "javafx-maven-plugin")
+                        , getStringValueTag("version", self.version)
+                        , getStringValueTag("configuration", "\n" + addIndentation(configurationString) + "\n")
+                    ];
+                    // check CLI/lifecycle-style
+                    if(self.configuration.selectedBuildMechanism === "lifecycle"){
+                        var executionRows = [];
+                        var jarExecutionRows = [];
+                        // native
+                        if( self.configuration.selectedLifecycle === "build-native" ){
+                            jarExecutionRows[jarExecutionRows.length] = "&lt;"+ "!-- required before build-native --" +"&gt;";
+                        }
+                        // web
+                        if( self.configuration.selectedLifecycle === "build-web" ){
+                            jarExecutionRows[jarExecutionRows.length] = "&lt;"+ "!-- required before build-web --" +"&gt;";
+                        }
+                        
+                        // jar, native, web
+                        if(self.configuration.selectedLifecycle !== "build-generate-key-store"){
+                            jarExecutionRows[jarExecutionRows.length] = getStringValueTag("id", "create-jfxjar");
+                            jarExecutionRows[jarExecutionRows.length] = getStringValueTag("phase", "package");
+                            jarExecutionRows[jarExecutionRows.length] = getStringValueTag("goals", "\n" + 
+                                    addIndentation( getStringValueTag("goal", "build-jar") )
+                                + "\n");
+                            var jarExecution = getStringValueTag("execution", "\n"+addIndentation( jarExecutionRows.join("\n") ) +"\n");
+                            executionRows[executionRows.length] = jarExecution;
+                        }
+                        // native
+                        if(self.configuration.selectedLifecycle === "build-native"){
+                            var nativeExecutionRows = [];
+                            nativeExecutionRows[nativeExecutionRows.length] = getStringValueTag("id", "create-native");
+                            nativeExecutionRows[nativeExecutionRows.length] = getStringValueTag("phase", "package");
+                            nativeExecutionRows[nativeExecutionRows.length] = getStringValueTag("goals", "\n" + 
+                                    addIndentation( getStringValueTag("goal", "build-native") )
+                                + "\n");
+                            nativeExecution = getStringValueTag("execution", "\n"+addIndentation( nativeExecutionRows.join("\n") ) +"\n");
+                            executionRows[executionRows.length] = nativeExecution;
+                        }
+                        // web
+                        if(self.configuration.selectedLifecycle === "build-web"){
+                            var webExecutionRows = [];
+                            webExecutionRows[webExecutionRows.length] = getStringValueTag("id", "create-web");
+                            webExecutionRows[webExecutionRows.length] = getStringValueTag("phase", "package");
+                            webExecutionRows[webExecutionRows.length] = getStringValueTag("goals", "\n" + 
+                                    addIndentation( getStringValueTag("goal", "build-web") )
+                                + "\n");
+                            webExecutionRows = getStringValueTag("execution", "\n"+addIndentation( webExecutionRows.join("\n") ) +"\n");
+                            executionRows[executionRows.length] = webExecutionRows;
+                        }
+                        // generate-key-store
+                        if(self.configuration.selectedLifecycle === "build-generate-key-store"){
+                            var keystoreExecutionRows = [];
+                            keystoreExecutionRows[keystoreExecutionRows.length] = getStringValueTag("id", "create-keystore");
+                            keystoreExecutionRows[keystoreExecutionRows.length] = getStringValueTag("phase", "package");
+                            keystoreExecutionRows[keystoreExecutionRows.length] = getStringValueTag("goals", "\n" + 
+                                    addIndentation( getStringValueTag("goal", "build-generate-key-store") )
+                                + "\n");
+                            keystoreExecutionRows = getStringValueTag("execution", "\n"+addIndentation( keystoreExecutionRows.join("\n") ) +"\n");
+                            executionRows[executionRows.length] = keystoreExecutionRows;
+                        }
+                        
+                        rows[rows.length] = getStringValueTag("executions", "\n" + 
+                                addIndentation( executionRows.join("\n" ) )
+                            + "\n");
+                    }
+                    return rows.join("\n");
+                }
+                function addNonDefaultOrEmptyStringValue(valueKey){
+                    if(!hasDefaultOrEmptyValue(self.mavenproperties[valueKey]))
+                        configurationRows[configurationRows.length] = getStringValueTag(valueKey, self.mavenproperties[valueKey].value);
+                }
+                function addNonDefaultOrEmptyBooleanValue(valueKey){
+                    if(!hasDefaultValue(self.mavenproperties[valueKey]))
+                        configurationRows[configurationRows.length] = getBooleanValueTag(valueKey, self.mavenproperties[valueKey].value);
+                }
+                function getConfigurationCode(){
+
+                    // always needed
+                    if( self.configuration.selectedGoal === "jar" || self.configuration.selectedGoal === "native" || self.configuration.selectedGoal === "web" ){
+                        // "global"-goal-values
+                        configurationRows[configurationRows.length] = getStringValueTag("mainClass", self.mavenproperties.mainClass.value);
+                        addNonDefaultOrEmptyBooleanValue("verbose");
+                        addNonDefaultOrEmptyStringValue("jfxAppOutputDir");
+                        addNonDefaultOrEmptyStringValue("jfxMainAppJarName");
+                        addNonDefaultOrEmptyStringValue("deployDir");
+                    }
+                    if( self.configuration.selectedGoal === "jar" ){
+                        addNonDefaultOrEmptyBooleanValue("css2bin");
+                        addNonDefaultOrEmptyStringValue("preLoader");
+                        addNonDefaultOrEmptyBooleanValue("updateExistingJar");
+                        addNonDefaultOrEmptyBooleanValue("allPermissions");
+                        // TODO manifestAttributes
+                        addNonDefaultOrEmptyBooleanValue("addPackagerJar");
+                    }
+                    if( self.configuration.selectedGoal === "native" ){
+                        if( self.configuration.selectedOS === "macosx" ){
+                            configurationRows[configurationRows.length] = getStringValueTag("identifier", self.mavenproperties.identifier.value);
+                        }
+                        addNonDefaultOrEmptyStringValue("vendor");
+                        addNonDefaultOrEmptyStringValue("nativeOutputDir");
+                        addNonDefaultOrEmptyStringValue("bundleType");
+                        addNonDefaultOrEmptyStringValue("bundler");
+                        // TODO jvmArgs
+                        // TODO jvmProperties
+                        // TODO userJvmArgs
+                        addNonDefaultOrEmptyStringValue("nativeReleaseVersion");
+                        addNonDefaultOrEmptyBooleanValue("needShortcut");
+                        addNonDefaultOrEmptyBooleanValue("needMenu");
+                        // TODO bundleArguments
+                        addNonDefaultOrEmptyStringValue("appName");
+                        addNonDefaultOrEmptyStringValue("additionalAppResources");
+                    }
+                    if( self.configuration.selectedGoal === "web" ){
+                        addNonDefaultOrEmptyStringValue("vendor");
+                        addNonDefaultOrEmptyStringValue("webOutputDir");
+                        addNonDefaultOrEmptyBooleanValue("needShortcut");
+                        addNonDefaultOrEmptyBooleanValue("needMenu");
+                        
+                        addNonDefaultOrEmptyStringValue("preLoader");
+                        addNonDefaultOrEmptyBooleanValue("allPermissions");
+                        addNonDefaultOrEmptyStringValue("width");
+                        addNonDefaultOrEmptyStringValue("height");
+                        addNonDefaultOrEmptyStringValue("embeddedWidth");
+                        addNonDefaultOrEmptyStringValue("embeddedHeight");
+                        
+                        addNonDefaultOrEmptyStringValue("keyStore");
+                        addNonDefaultOrEmptyStringValue("keyStoreAlias");
+                        addNonDefaultOrEmptyStringValue("keyStorePassword");
+                        addNonDefaultOrEmptyStringValue("keyPassword");
+                        addNonDefaultOrEmptyStringValue("keyStoreType");
+
+                        addNonDefaultOrEmptyStringValue("description");
+                        addNonDefaultOrEmptyStringValue("title");
+                        addNonDefaultOrEmptyStringValue("j2seVersion");
+                    }
+                    if( self.configuration.selectedGoal === "generate-key-store" ){
+                        addNonDefaultOrEmptyBooleanValue("overwriteKeyStore");
+                        
+                        addNonDefaultOrEmptyStringValue("keyStore");
+                        addNonDefaultOrEmptyStringValue("keyStoreAlias");
+                        addNonDefaultOrEmptyStringValue("keyStorePassword");
+                        addNonDefaultOrEmptyStringValue("keyPassword");
+                        
+                        configurationRows[configurationRows.length] = getStringValueTag("certDomain", self.mavenproperties.certDomain.value);
+                        configurationRows[configurationRows.length] = getStringValueTag("certOrgUnit", self.mavenproperties.certOrgUnit.value);
+                        configurationRows[configurationRows.length] = getStringValueTag("certOrg", self.mavenproperties.certOrg.value);
+                        configurationRows[configurationRows.length] = getStringValueTag("certState", self.mavenproperties.certState.value);
+                        configurationRows[configurationRows.length] = getStringValueTag("certCountry", self.mavenproperties.certCountry.value);
+                    }
+                    return configurationRows.join("\n");
+                }
+                function getFullPluginConfigurationCode(){
+                    var configurationCode = getPluginInnerCode(getConfigurationCode());
+                    return getStringValueTag("plugin", "\n" + addIndentation(configurationCode) + "\n");
+                }
+                Polymer.dom(this.$.output).innerHTML = getFullPluginConfigurationCode();
+                Prism.highlightElement(this.$.output);
+                
+                var command = "mvn ";
+                if(this.configuration.selectedBuildMechanism === "cli"){
+                    command += "jfx:" + this.configuration.selectedGoal;
+                }
+
+                if(this.configuration.selectedBuildMechanism === "lifecycle"){
+                    command += "package";
+                }
+
+                this.$.callCommand.innerHTML = command;
+                Prism.highlightElement(this.$.callCommand);
+            }
+        });
+    </script>
+</dom-module>
