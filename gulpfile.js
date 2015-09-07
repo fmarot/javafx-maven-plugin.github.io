@@ -9,6 +9,7 @@ var sourceFolder = "src";
 var htmlSources = sourceFolder + "/html/**/*.html";
 var cssSources = sourceFolder + "/css/**/*.css";
 var assetsSources = sourceFolder + "/assets/**/*";
+var skeletonSources = sourceFolder + "/skeleton/**/*";
 
 var componentsTarget = targetFolder + "/webcomponents";
 // ----------------------------------
@@ -16,6 +17,13 @@ gulp.task("html", function () {
     console.log("Copying HTML-files");
     return gulp.src(htmlSources)
         .pipe(gulp.dest(targetFolder))
+        .on("error", gutil.log);
+});
+
+gulp.task("skeleton", function () {
+    console.log("Copying skeleton-files");
+    return gulp.src(skeletonSources)
+        .pipe(gulp.dest(targetFolder + "/"))
         .on("error", gutil.log);
 });
 
@@ -82,8 +90,9 @@ gulp.task("webserver", ["default"], function(cb) {
     });
 
     gulp.watch(assetsSources, ["assets"], browserSync.reload);
+    gulp.watch(skeletonSources, ["skeleton"], browserSync.reload);
     gulp.watch(cssSources, ["css"], browserSync.reload);
     gulp.watch(htmlSources, ["html"], browserSync.reload);
 });
 
-gulp.task("default", ["html", "assets", "css", "webdeps"], function(cb){ cb(); });
+gulp.task("default", ["html", "assets", "skeleton", "css", "webdeps"], function(cb){ cb(); });

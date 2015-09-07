@@ -30,54 +30,62 @@
 
             <os-specific os="macosx" selectedOS="{{configuration.selectedOS}}">
                 <string-value label="identifier" value="{{mavenproperties.identifier.value}}" defaultValue="{{mavenproperties.identifier.defaultValue}}">
-                    identifier
+                    Used as the 'id' of the application, and is used as the CFBundleDisplayName on Mac. See the official JavaFX Packaging tools documentation for other information on this.
                 </string-value>
             </os-specific>
 
-            <!-- TODO make required -->
             <string-value label="vendor" value="{{mavenproperties.vendor.value}}" defaultValue="{{mavenproperties.vendor.defaultValue}}">
-                vendor
+                The vendor of the application (i.e. you). This is required for some of the installation bundles and it's recommended just to set it from the get-go to avoid problems. This will default to the project.organization.name element in you POM if you have one.
             </string-value>
 
             <string-value label="nativeOutputDir" value="{{mavenproperties.nativeOutputDir.value}}" defaultValue="{{mavenproperties.nativeOutputDir.defaultValue}}">
-                nativeOutputDir
+                The output directory that the native bundles are to be built into. This will be the base directory only as the JavaFX packaging tools use sub-directories that can't be customised. Generally just have a rummage through the sub-directories until you find what you are looking for.
             </string-value>
             
             <!-- TODO make deprecated -->
-            <string-value label="bundleType" value="{{mavenproperties.bundleType.value}}" defaultValue="{{mavenproperties.bundleType.defaultValue}}">
-                <p>BundleType was refactored/replaced in javafx itself, please use/upgrade to the new bundler-property</p>
+            <string-value label="bundleType" value="{{mavenproperties.bundleType.value}}" defaultValue="{{mavenproperties.bundleType.defaultValue}}" deprecated>
+                BundleType was refactored/replaced in javafx itself, please use/upgrade to the new bundler-property
             </string-value>
 
             <string-value label="bundler" value="{{mavenproperties.bundler.value}}" defaultValue="{{mavenproperties.bundler.defaultValue}}">
-                <p>bundler</p>
+                Specify the used bundler found by selected bundleType. May not be installed your OS and will fail in that case.
             </string-value>
 
-            <!-- TODO make string-list -->
-            <string-list name="jvmArgs"></string-list>
+            <string-list name="jvmArgs" value="{{mavenproperties.jvmArgs.value}}">
+                JVM Flags to be passed into the JVM at invocation time. These are the arguments to the left of the main class name when launching Java on the command line.
+            </string-list>
             
-            <string-map label="jvmProperties" value="{{mavenproperties.jvmProperties.value}}"></string-map>
-            <string-map label="userJvmArgs" value="{{mavenproperties.userJvmArgs.value}}"></string-map>
+            <string-map label="jvmProperties" value="{{mavenproperties.jvmProperties.value}}">
+                Properties passed to the Java Virtual Machine when the application is started (i.e. these properties are system properties of the JVM bundled in the native distribution and used to run the application once installed).
+            </string-map>
+            <string-map label="userJvmArgs" value="{{mavenproperties.userJvmArgs.value}}">
+                Optional command line arguments passed to the application when it is started. These will be included in the native bundle that is generated and will be accessible via the main(String[] args) method on the main class that is launched at runtime. <br /><br />
+                These options are user overridable for the value part of the entry via user preferences.  The key and the value are concated without a joining character when invoking the JVM.
+            </string-map>
             
             <string-value label="nativeReleaseVersion" value="{{mavenproperties.nativeReleaseVersion.value}}" defaultValue="{{mavenproperties.nativeReleaseVersion.defaultValue}}">
-                <p>This will be used inside installer.</p>
+                The release version as passed to the native installer. It would be nice to just use the project's version number but this must be a fairly traditional version string (like '1.34.5') with only numeric characters and dot separators, otherwise the JFX packaging tools bomb out. We default to 1.0 in case you can't be bothered to set a version and don't really care.
             </string-value>
 
             <boolean-value label="needShortcut" value="{{mavenproperties.needShortcut.value}}" defaultValue="{{mavenproperties.needShortcut.defaultValue}}">
-                <p>Do you want a shortcut installed?</p>
+                Set this to true if you would like your application to have a shortcut on the users desktop (or platform equivalent) when it is installed.
             </boolean-value>
 
             <boolean-value label="needMenu" value="{{mavenproperties.needMenu.value}}" defaultValue="{{mavenproperties.needMenu.defaultValue}}">
-                <p>Do you want a menu-entry installed?</p>
+                Set this to true if you would like your application to have a link in the main system menu (or platform equivalent) when it is installed.
             </boolean-value>
 
-            <string-map label="bundleArguments" value="{{mavenproperties.bundleArguments.value}}"></string-map>
-            
-            
+            <string-map label="bundleArguments" value="{{mavenproperties.bundleArguments.value}}">
+                A list of bundler arguments.  The particular keys and the meaning of their values are dependent on the bundler that is reading the arguments.  Any argument not recognized by a bundler is silently ignored, so that arguments that are specific to a specific bundler (for example, a Mac OS X Code signing key name) can be configured and ignored by bundlers that don't use the particular argument. <br /><br />
+                To disable creating native bundles with JRE in it, just add "&lt;runtime /&gt;" to bundleArguments. <br /><br />
+                If there are bundle arguments that override other fields in the configuration, then it is an execution error.
+            </string-map>
+
             <string-value label="appName" value="{{mavenproperties.appName.value}}" defaultValue="{{mavenproperties.appName.defaultValue}}">
-                <p>The name of your application.</p>
+                The name of the JavaFX packaged executable to be built into the 'native/bundles' directory. By default this will be the finalName as set in your project. Change this if you want something nicer.
             </string-value>
             <string-value label="additionalAppResources" value="{{mavenproperties.additionalAppResources.value}}" defaultValue="{{mavenproperties.additionalAppResources.defaultValue}}">
-                <p>Additional files that should be made available.</p>
+                When you need to add additional files to generated app-folder (e.g. README, license, third-party-tools, ...), you can specify the source-folder here. All files will be copied recursively.
             </string-value>
         </div>
     </template>

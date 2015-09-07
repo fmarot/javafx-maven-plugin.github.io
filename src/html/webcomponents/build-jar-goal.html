@@ -11,27 +11,27 @@
             <global-goal-values mavenProperties="{{mavenproperties}}"></global-goal-values>
             
             <boolean-value label="css2bin" value="{{mavenproperties.css2bin.value}}" defaultValue="{{mavenproperties.css2bin.defaultValue}}">
-                Compile CSS to binary-format
+                Flag to switch on and off the compiling of CSS files to the binary format. In theory this has some minor performance gains, but it's debatable whether you will notice them, and some people have experienced problems with the resulting compiled files. Use at your own risk. By default this is false and CSS files are left in their plain text format as they are found.
             </boolean-value>
 
             <string-value label="preLoader" value="{{mavenproperties.preLoader.value}}" defaultValue="{{mavenproperties.preLoader.defaultValue}}">
-                class-name of javafx-preloader
+                A custom class that can act as a Pre-Loader for your app. The Pre-Loader is run before anything else and is useful for showing splash screens or similar 'progress' style windows. For more information on Pre-Loaders, see the official JavaFX packaging documentation.
             </string-value>
 
             <boolean-value label="updateExistingJar" value="{{mavenproperties.updateExistingJar.value}}" defaultValue="{{mavenproperties.updateExistingJar.defaultValue}}">
-                Update existing JAR-file
+                Flag to switch on updating the existing jar created with maven. The jar to be updated is taken from '${project.basedir}/target/${project.build.finalName}.jar'
             </boolean-value>
 
             <boolean-value label="allPermissions" value="{{mavenproperties.allPermissions.value}}" defaultValue="{{mavenproperties.allPermissions.defaultValue}}">
-                Request priviledged permissions
+                Set this to true if your app needs to break out of the standard web sandbox and do more powerful functions. If you are using FXML you will need to set this value to true.
             </boolean-value>
 
             <string-map label="manifestAttributes" value="{{mavenproperties.manifestAttributes.value}}">
-                Add entries for the manifest-file
+                To add custom manifest-entries, just add each entry/value-pair here.
             </string-map>
             
             <boolean-value label="addPackagerJar" value="{{mavenproperties.addPackagerJar.value}}" defaultValue="{{mavenproperties.addPackagerJar.defaultValue}}">
-                Add packager.jar to dependencies (when provided as system-scoped)
+                For being able to use &lt;userJvmArgs&gt;, we have to copy a dependency-file when being used. To disable this feature an not having packager.jar in your project, set this to false. To get more information about, please check the documentation here: <a href="https://docs.oracle.com/javase/8/docs/technotes/guides/deploy/jvm_options_api.html" target="_blank">https://docs.oracle.com/javase/8/docs/technotes/guides/deploy/jvm_options_api.html</a>.
             </boolean-value>
         </div>
     </template>
