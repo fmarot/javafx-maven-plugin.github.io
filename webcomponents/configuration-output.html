@@ -77,7 +77,7 @@
                         }
                         
                         // jar, native, web
-                        if(self.configuration.selectedLifecycle !== "build-generate-key-store"){
+                        if(self.configuration.selectedLifecycle !== "build-keystore"){
                             jarExecutionRows[jarExecutionRows.length] = getStringValueTag("id", "create-jfxjar");
                             jarExecutionRows[jarExecutionRows.length] = getStringValueTag("phase", "package");
                             jarExecutionRows[jarExecutionRows.length] = getStringValueTag("goals", "\n" + 
@@ -109,12 +109,12 @@
                             executionRows[executionRows.length] = webExecutionRows;
                         }
                         // generate-key-store
-                        if(self.configuration.selectedLifecycle === "build-generate-key-store"){
+                        if(self.configuration.selectedLifecycle === "build-keystore"){
                             var keystoreExecutionRows = [];
                             keystoreExecutionRows[keystoreExecutionRows.length] = getStringValueTag("id", "create-keystore");
                             keystoreExecutionRows[keystoreExecutionRows.length] = getStringValueTag("phase", "package");
                             keystoreExecutionRows[keystoreExecutionRows.length] = getStringValueTag("goals", "\n" + 
-                                    addIndentation( getStringValueTag("goal", "build-generate-key-store") )
+                                    addIndentation( getStringValueTag("goal", "build-keystore") )
                                 + "\n");
                             keystoreExecutionRows = getStringValueTag("execution", "\n"+addIndentation( keystoreExecutionRows.join("\n") ) +"\n");
                             executionRows[executionRows.length] = keystoreExecutionRows;
