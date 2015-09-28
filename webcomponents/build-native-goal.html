@@ -87,6 +87,13 @@
             <string-value label="additionalAppResources" value="{{mavenproperties.additionalAppResources.value}}" defaultValue="{{mavenproperties.additionalAppResources.defaultValue}}">
                 When you need to add additional files to generated app-folder (e.g. README, license, third-party-tools, ...), you can specify the source-folder here. All files will be copied recursively.
             </string-value>
+
+            <os-specific os="linux" selectedOS="{{configuration.selectedOS}}">
+                <boolean-value label="skipNativeLauncherWorkaround124" value={{mavenproperties.skipNativeLauncherWorkaround124.value}} defaultValue={{mavenproperties.skipNativeLauncherWorkaround124.defaultValue}}>
+                    Disables workaround for issue 124 regarding native launcher under linux when having a DOT inside appName.
+                    For more details see <a href="https://github.com/javafx-maven-plugin/javafx-maven-plugin/issues/124" target="_blank">here</a>.
+                <boolean-value>
+            </os-specific>
         </div>
     </template>
     <script>

@@ -170,6 +170,9 @@
                         // TODO bundleArguments
                         addNonDefaultOrEmptyStringValue("appName");
                         addNonDefaultOrEmptyStringValue("additionalAppResources");
+                        if( self.configuration.selectedOS === "linux" ){
+                            addNonDefaultOrEmptyBooleanValue("skipNativeLauncherWorkaround124");
+                        }
                     }
                     if( self.configuration.selectedGoal === "web" ){
                         addNonDefaultOrEmptyStringValue("vendor");
